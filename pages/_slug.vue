@@ -1,25 +1,16 @@
 <template>
-  <article>
-    <AppSearchInput />
-    <nav>
-      <ul>
-        <li v-for="link of article.toc" :key="link.id">
-          <NuxtLink :class="{ 'py-2': link.depth === 2, 'ml-2 pb-2': link.depth === 3 }" :to="`#${link.id}`">
-            {{ link.text }}
-          </NuxtLink>
-        </li>
-      </ul>
-    </nav>
-    <prev-next :prev="prev" :next="next" />
-    <h1>{{ article.title }}</h1>
-    <p>{{ article.description }}</p>
-    <img :src="article.img" :alt="article.alt"/>
-    <p>Article last updated: {{ formatDate(article.updatedAt) }}</p>
-    <nuxt-content :document="article"/>
+  <main id="main" class="site-main" role="main">
+    <article>
+      <h1>{{ article.title }}</h1>
+      <img class="aligncenter" :src="article.img" :alt="article.alt"/>
+      <p>{{ article.description }}</p>
+      <p>Article last updated: {{ formatDate(article.updatedAt) }}</p>
+      <p><fa :icon="['fas', 'clock']"></fa> {{ article.readingTime }}</p>
+      <nuxt-content :document="article"/>
 
-    <author :author="article.author"></author>
-    <prev-next :prev="prev" :next="next" />
-  </article>
+      <author :author="article.author"></author>
+    </article>
+  </main>
 </template>
 
 <script>
@@ -45,6 +36,18 @@ export default {
 </script>
 
 <style>
+.aligncenter {
+  display: block;
+  clear: both;
+  margin: .875em auto;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border: 0;
+}
+
 .nuxt-content h1 {
   font-weight: bold;
   font-size: 28px;

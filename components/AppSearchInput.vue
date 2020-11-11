@@ -8,7 +8,7 @@
     />
     <ul v-if="articles.length">
       <li v-for="article of articles" :key="article.slug">
-        <NuxtLink :to="{ name: 'blog-slug', params: { slug: article.slug } }">
+        <NuxtLink :to="{ name: 'slug', params: { slug: article.slug } }">
           {{ article.title }}
         </NuxtLink>
       </li>

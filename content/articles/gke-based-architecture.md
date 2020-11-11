@@ -3,8 +3,9 @@ title: Deploying an app on a GKE cluster
 description: Learn how to deploy a real application with front and backend on a Google Kubernetes Engine
 img: /gke-cloud.png
 alt: Google Kubernetes Engine
+readingTime: 5 minutes
 author:
-  name: Thibault
+  name: Thibault Ruaro
   bio: All about Thibault
   image: /thibault-ruaro.jpg
 ---

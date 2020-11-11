@@ -3,8 +3,9 @@ title: Deploying an app on CloudRun and Firebase
 description: Learn how to deploy a real application with front and back on cloud architecture for low cost
 img: /cloudrun.png
 alt: Cloudrun
+readingTime: 20 minutes
 author:
-  name: Thibault
+  name: Thibault Ruaro
   bio: All about Thibault
   image: /thibault-ruaro.jpg
 ---
