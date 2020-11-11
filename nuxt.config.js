@@ -50,7 +50,7 @@ export default {
     ['@nuxtjs/fontawesome', {
       component: 'fa',
       icons: {
-        solid: ['faUser', 'faCalendar', 'faClock']
+        solid: ['faUser', 'faCalendar', 'faClock', 'faChevronLeft', 'faChevronRight']
       }
     }]
   ],

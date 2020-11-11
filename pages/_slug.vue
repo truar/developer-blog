@@ -9,6 +9,7 @@
       <nuxt-content :document="article"/>
 
       <author :author="article.author"></author>
+      <prev-next :prev="prev" :next="next" />
     </article>
   </main>
 </template>
@@ -24,7 +25,13 @@ export default {
   async asyncData({ $content, params }) {
     const article = await $content('articles', params.slug).fetch()
 
-    return { article }
+    const [prev, next] = await $content('articles')
+      .only(['title', 'slug'])
+      .sortBy('createdAt', 'desc')
+      .surround(params.slug)
+      .fetch()
+
+    return { article, prev, next }
   }
 }
 </script>
