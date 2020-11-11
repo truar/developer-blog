@@ -7,7 +7,7 @@
                src="/thibault-ruaro.png">
         </a>
         <h1 class="site-title">
-          <a href="https://independentpublisher2demo.wordpress.com/?demo" rel="home">Thibault RUARO's website</a>
+          <a href="/" rel="home">Thibault RUARO's website</a>
         </h1>
         <p class="site-description">I am a developer wishing to share my passion and knowledge with you</p>
       </div>
@@ -19,7 +19,7 @@
             class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-home menu-item-57">
             <a href="/">Home</a></li>
           <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-295"><a
-            href="/">About me</a></li>
+            href="/author/Thibault Ruaro">About me</a></li>
         </ul>
       </div>
     </nav>

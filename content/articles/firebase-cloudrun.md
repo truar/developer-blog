@@ -6,8 +6,8 @@ alt: Cloudrun
 readingTime: 20 minutes
 author:
   name: Thibault Ruaro
-  bio: All about Thibault
-  image: /thibault-ruaro.jpg
+  bio: Thibault is a GCP Professional Architect, with a passion for great code. He likes reading about code best practices and staying up-to-date concerning the latest IT subject. He is also an official Spring Core Trainer, where he gives training at Zenika on a monthly basis.
+  image: /thibault-ruaro.png
 ---
 # Cloud CMR App V2
 
@@ -44,7 +44,7 @@ Notes on `Cloud Run`
 - Can be configured easily using the CLI or a deployment file (`cloudcmr-back-sevice.yaml`) to set parameters for auto-scaling like concurrency limit, the number of instances you allow to scale at most...
 - You need to leave the port assigned via an environment variable provided by Cloud Run
 ```yaml
-#appliction.properties
+#application.properties
 server:
   port: ${PORT:8080}
 ```
@@ -327,10 +327,4 @@ CMD ["java", "-Xshare:on", "-XX:SharedArchiveFile=/appcds.jsa", "-Dspring.devtoo
 #### And the result 
 
 The application now starts **in 4 to 5 seconds**, instead of 15 seconds or more. **It was worth it !**
-
-## What is left to think ?
-
-1. Should I use the same project for testing and for production ? I don't think so, but it might be cheaper ?
-2. How will I configure the master trigger build ? 
-3. I have to define my RPO and RTO (backup data, recovery plan...)
 

@@ -6,8 +6,8 @@ alt: Google Kubernetes Engine
 readingTime: 5 minutes
 author:
   name: Thibault Ruaro
-  bio: All about Thibault
-  image: /thibault-ruaro.jpg
+  bio: Thibault is a GCP Professional Architect, with a passion for great code. He likes reading about code best practices and staying up-to-date concerning the latest IT subject. He is also an official Spring Core Trainer, where he gives training at Zenika on a monthly basis.
+  image: /thibault-ruaro.png
 ---
 # Cloud CMR App V2
 

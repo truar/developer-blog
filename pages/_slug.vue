@@ -4,7 +4,7 @@
       <h1>{{ article.title }}</h1>
       <img class="aligncenter" :src="article.img" :alt="article.alt"/>
       <p>{{ article.description }}</p>
-      <p>Article last updated: {{ formatDate(article.updatedAt) }}</p>
+      <p><fa :icon="['fas', 'calendar']"></fa> Article last updated: {{ formatDate(article.updatedAt) }}</p>
       <p><fa :icon="['fas', 'clock']"></fa> {{ article.readingTime }}</p>
       <nuxt-content :document="article"/>
 
@@ -24,18 +24,26 @@ export default {
   async asyncData({ $content, params }) {
     const article = await $content('articles', params.slug).fetch()
 
-    const [prev, next] = await $content('articles')
-      .only(['title', 'slug'])
-      .sortBy('createdAt', 'asc')
-      .surround(params.slug)
-      .fetch()
-
-    return { article, prev, next }
+    return { article }
   }
 }
 </script>
 
 <style>
+.site-main .nuxt-content-container:nth-child(n+2) {
+  margin-top: 1.75em;
+  padding-top: 1.75em;
+  border-top: solid 1px #ddd;
+}
+
+.site-main .nuxt-content-container:nth-child(n+2)  {
+  border-color: rgba(221, 221, 221, .25);
+}
+
+.nuxt-content-container {
+  position: relative;
+}
+
 .aligncenter {
   display: block;
   clear: both;
@@ -46,6 +54,10 @@ img {
   max-width: 100%;
   height: auto;
   border: 0;
+}
+
+article h1 {
+  font-size: 2em;
 }
 
 .nuxt-content h1 {
