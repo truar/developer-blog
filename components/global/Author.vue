@@ -37,6 +37,7 @@ export default {
   flex-direction: row;
   gap: 15px;
   align-items: flex-start;
+  justify-content: space-evenly;
 }
 
 .author-picture img {
