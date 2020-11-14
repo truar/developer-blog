@@ -3,7 +3,7 @@
     <div class="inner">
       <div class="site-branding">
         <a class="site-logo-link">
-          <img alt="" class="site-logo-image no-grav grav-hashed" width="80" height="80"
+          <img alt="Picture of Thibault Ruaro" class="site-logo-image no-grav grav-hashed" width="80" height="80"
                src="/thibault-ruaro.png">
         </a>
         <h1 class="site-title">
