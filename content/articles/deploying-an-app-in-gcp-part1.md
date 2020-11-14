@@ -83,4 +83,47 @@ This step wasn't much, but at least you have the basis to go on when we will dep
 
 ## Deploying the application into Cloud Run
 
-...
+Before talking about CD, let's first try to deploy our application manually on cloud run.
+
+### Quick words on Cloud Run
+
+Cloud Run "Fully managed" is a service provided by GCP that allows you to run a container (Docker for instance) on the Google infrastructure. Is has many advantages:
+* the cost is very attractive. Indeed, you pay only for the CPU allocated, and the CPU is allocated only when your container receives an HTTP request. In other words, you only pay when your container is being used.
+* You run a container, which makes you independent of the runtime environment provided by Google in a case of App engine Standard for instance. Besides, it is easy for you to test your container locally.
+* As a container, you can easily host your application elsewhere, in another provider for instance.
+
+> See the resources part for full resources URL on Cloud run.
+
+### Containerize the application
+
+Let's add this Dockerfile at the root of our application. We will used a multistage build, as it is an even more portable solution.
+```Dockerfile
+FROM maven:3.6.3-openjdk-11-slim as builder
+
+WORKDIR /app
+COPY pom.xml .
+# Use this optimization to cache the local dependencies. Works as long as the POM doesn't change
+RUN mvn dependency:go-offline
+
+COPY src/ /app/src/
+RUN mvn package
+
+# Use AdoptOpenJDK for base image.
+FROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine
+
+# Copy the jar to the production image from the builder stage.
+COPY --from=builder /app/target/*.jar /app.jar
+
+# Run the web service on container startup.
+CMD ["java", "-jar", "/app.jar"]
+```
+
+```
+docker build -t gcp-deploy-cloud-run:latest .
+```
+
+## Resources
+
+* [Documentation for Cloud Run](https://cloud.google.com/run/docs/choosing-a-platform)
+* [Pricing of Cloud Run](https://cloud.google.com/run/pricing#cloudrun-pricing)
+* [Caching Maven dependencies in a multistage build](https://medium.com/@nieldw/caching-maven-dependencies-in-a-docker-build-dca6ca7ad612)
