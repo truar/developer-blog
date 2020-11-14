@@ -1,6 +1,8 @@
 ---
 title: Welcome to my blog
 description: A quick introduction to who I am, and the reasons I've decided to start my own blog.
+image: /articles/welcome/welcome-to-my-blog.jpg
+alt: A welcome sign
 readingTime: 13 minutes
 author:
   name: Thibault Ruaro

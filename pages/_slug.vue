@@ -2,7 +2,7 @@
   <main id="main" class="site-main" role="main">
     <article>
       <h1>{{ article.title }}</h1>
-      <img class="aligncenter" :src="article.img" :alt="article.alt"/>
+      <img class="aligncenter" :src="article.image" :alt="article.alt"/>
       <p>{{ article.description }}</p>
       <p><fa :icon="['fas', 'calendar']"></fa> Article last updated: {{ formatDate(article.updatedAt) }}</p>
       <p><fa :icon="['fas', 'clock']"></fa> {{ article.readingTime }}</p>

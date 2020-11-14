@@ -3,7 +3,7 @@
     <header>
       <NuxtLink class="entry-title" :to="{ name: 'slug', params: { slug: article.slug } }">
         <h1>{{ article.title }}</h1>
-        <img class="aligncenter" :src="article.img"/>
+        <img class="aligncenter" :src="article.image"/>
       </NuxtLink>
     </header>
     <section class="excerpt">
