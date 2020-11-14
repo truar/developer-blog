@@ -11,18 +11,9 @@
         </h1>
         <p class="site-description">I am a developer wishing to share my passion and knowledge with you</p>
       </div>
+      <app-social-media></app-social-media>
     </div>
-    <nav id="site-navigation" class="main-navigation" role="navigation">
-      <div class="menu-main-navigation-container">
-        <ul id="primary-menu" class="menu nav-menu" aria-expanded="false">
-          <li
-            class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-home menu-item-57">
-            <a href="/">Home</a></li>
-          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-295"><a
-            href="/author/Thibault Ruaro">About me</a></li>
-        </ul>
-      </div>
-    </nav>
+    <app-navigation></app-navigation>
   </header>
 </template>
 
@@ -35,6 +26,10 @@
   padding: 0 1.75em;
   text-align: center;
   word-wrap: break-word;
+}
+
+.site-branding {
+  margin-bottom: 1.75em;
 }
 
 .site-logo-link {
@@ -63,58 +58,6 @@
   line-height: 1.4;
   word-wrap: break-word;
   color: #929292;
-}
-
-.main-navigation {
-  display: block;
-  clear: both;
-  width: 100%;
-  margin: 20px auto 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif;
-  font-size: 17px;
-  font-weight: 700;
-  text-align: left;
-}
-
-@media screen and (min-width: 32.375em) {
-  .main-navigation {
-    text-align: center;
-  }
-}
-
-.main-navigation ul {
-  margin: 0;
-  padding-left: 0;
-  list-style: none;
-}
-
-@media screen and (min-width: 32.375em) {
-  .main-navigation ul {
-    display: block;
-  }
-}
-
-.main-navigation ul:first-child > li:first-child {
-  border-top: 0;
-}
-
-.main-navigation li {
-  border-top: 1px solid #ccc;
-  position: relative;
-  display: inline-block;
-  margin-top: .4375em;
-  padding-top: .4375em;
-  line-height: 1.3;
-  width: 100%;
-}
-
-@media screen and (min-width: 32.375em) {
-  .main-navigation li {
-    padding: 0;
-    width: auto;
-    border: 0;
-    margin: .209875em .4375em;
-  }
 }
 
 </style>

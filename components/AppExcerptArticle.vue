@@ -87,20 +87,4 @@ article h1 {
 .entry-title:hover h1, .entry-title:focus h1, .entry-title:active h1 {
   opacity: .8;
 }
-
-.entry-meta > span {
-  top: 3px;
-  display: inline-block;
-  margin-right: 1.3125em;
-  vertical-align: middle;
-  position: relative;
-}
-
-.entry-footer a {
-  -webkit-transition: color .14s ease-in-out;
-  transition: color .14s ease-in-out;
-  line-height: inherit;
-  text-decoration: none;
-  color: #b3b3b1;
-}
 </style>

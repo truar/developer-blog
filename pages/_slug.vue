@@ -1,15 +1,27 @@
 <template>
   <main id="main" class="site-main" role="main">
     <article>
-      <h1>{{ article.title }}</h1>
+      <h1 class="main-title">{{ article.title }}</h1>
+      <div class="entry-meta">
+                  <span class="byline">
+                    <fa :icon="['fas', 'user']"></fa>
+                    {{ article.author.name }}
+                  </span>
+        <span class="published-on">
+                    <fa :icon="['fas', 'calendar']"></fa>
+                    {{ formatDate(article.createdAt) }}
+                  </span>
+        <span class="word-count">
+                    <fa :icon="['fas', 'clock']"></fa>
+                    {{ article.readingTime }}
+                  </span>
+      </div>
       <img class="aligncenter" :src="article.image" :alt="article.alt"/>
       <p>{{ article.description }}</p>
-      <p><fa :icon="['fas', 'calendar']"></fa> Article last updated: {{ formatDate(article.updatedAt) }}</p>
-      <p><fa :icon="['fas', 'clock']"></fa> {{ article.readingTime }}</p>
       <nuxt-content :document="article"/>
 
       <author :author="article.author"></author>
-      <prev-next :prev="prev" :next="next" />
+      <prev-next :prev="prev" :next="next"/>
     </article>
   </main>
 </template>
@@ -43,8 +55,37 @@ export default {
   border-top: solid 1px #ddd;
 }
 
-.site-main .nuxt-content-container:nth-child(n+2)  {
+.site-main .nuxt-content-container:nth-child(n+2) {
   border-color: rgba(221, 221, 221, .25);
+}
+
+.site-main .main-title {
+  margin-bottom: 0px;
+}
+
+.entry-meta {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  margin: .4375em 0 3.5em;
+  color: #b3b3b1;
+}
+
+.entry-meta > span {
+  top: 3px;
+  display: inline-block;
+  margin-right: 1.3125em;
+  vertical-align: middle;
+  position: relative;
+}
+
+.entry-meta a {
+  -webkit-transition: color .14s ease-in-out;
+  transition: color .14s ease-in-out;
+  line-height: inherit;
+  text-decoration: none;
+  color: #b3b3b1;
 }
 
 .nuxt-content-container {
