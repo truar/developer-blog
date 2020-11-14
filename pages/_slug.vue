@@ -34,6 +34,11 @@ export default {
       return new Date(date).toLocaleDateString('en', options)
     }
   },
+  head() {
+    return {
+      title: this.article.title
+    }
+  },
   async asyncData({ $content, params }) {
     const article = await $content('articles', params.slug).fetch()
 

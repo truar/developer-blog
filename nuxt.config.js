@@ -4,8 +4,8 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - thibault-ruaro-blog',
-    title: 'thibault-ruaro-blog',
+    titleTemplate: '%s - Thibault Ruaro\'s blog',
+    title: 'Home',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
