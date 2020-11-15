@@ -18,10 +18,10 @@ To know me a bit more, I invite you to discover me a bit more through the [About
 
 # Sharing is my objective
 
-I guess some of you wonders one day whether they should start their own blog ? Well, for me, I've been asking this myself for a long time. I guess I just needed time, and subjects to talk about. Besides, there is a lot of quality blogs on the internet, and I didn't see the point of making my own. I've been asking myself the following questions for a long time now :
+I guess some of you wonders one day whether they should start their own blog ? Well, for me, I've been asking this myself for a long time. I guess I just needed time, and subjects to talk about. Besides, there is a lot of quality blogs on the internet, and I didn't see the point of making my own. Here are some questions that stopped me along the way :
 * Will I be able to write interesting articles ?
 * Will the subject be attractive ?
-* Will my articles bring something different, another perspective that one can find on other blogs ?
+* Will my articles bring something different, another perspective that one did not find on another blog ?
 
 But then it struck me recently: Every time you build a software, even if during the first steps you followed a tutorial or an article, you always end up with something different, with you own constraints, your own problems that you need to overcome. When you find the solution to a problem, what better way to make sure you master the subject than being able to share it somehow ? You could find many solutions to share, but writing an article could be a great way to start.
 
@@ -30,9 +30,9 @@ Before this blog, the only way I had to share things was to provide a big Readme
 ## Why my blog and not just writing articles ?
 
 That's a fair point, as there are dozens of blogs, websites, articles nowadays. I think that having its own blog can have more advantages:
-* It brings you visibility and transparency regarding your software skills and experiments you do. It is easy for someone to make sure what you are talking about.
-* You can freely express yourselves, whether it be by designing your blog, or in the style used to write. 
-* You can talk about any subjects. You could even do an article that is not really technicals, but that transcript your point of view about a subject.
+* It brings you visibility and transparency regarding your software skills and experiments you do. It is easy for someone to make sure you know what you are talking about.
+* You can freely express yourself, whether by designing your blog, or in the style used to write. 
+* You can talk about any subjects. You could even do an article that is not really technical, but that transcript your point of view about a subject.
 * You can grow at your own pace. Not everyone is a poet, not every one can write perfect articles the first time. Take the time to discover what styles you are more comfortable using, and build something greater upon it.
 
 ## What kind of articles to expect ?
@@ -41,7 +41,7 @@ I don't think I am a particular good writer, I have never done something like th
 
 * I will make my best for my examples to work properly, even if given the diversity of the IT eco-system, it might not be easy
 * I will provide a resource part to help know how I built the solution
-* I will try bo as clear as possible, explaining briefly but clearly the different part of the article
+* I will try to be as clear as possible, explaining briefly but clearly the different part of the article
 
 # Conclusion
 
