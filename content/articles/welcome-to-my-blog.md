@@ -6,7 +6,7 @@ alt: A welcome sign
 readingTime: 13 minutes
 author:
   name: Thibault Ruaro
-  bio: Thibault is a GCP Professional Architect, with a passion for great code. He likes reading about code best practices and staying up-to-date concerning the latest IT subject. He is also an official Spring Core Trainer, where he gives training at Zenika on a monthly basis.
+  bio: I am a GCP Professional Architect, with a passion for great code. I like reading about code best practices and staying up-to-date concerning the latest IT subject. I am also an official Spring Core Trainer, where I give training at Zenika on a monthly basis.
   image: /thibault-ruaro.png
 ---
 
@@ -14,11 +14,11 @@ author:
 
 Welcome to you readers, I am happy to find you on my blog. The purpose is very simple: sharing with you the discoveries I do on my job as a Full-stack developer, or during experiments on my spare time. Being a software engineer is a really hard job, as you need to develop your soft skills, like communication, team-work and mostly adaptability as much as your hard-skills, where a rigorous and constant IT watch needs to be performed frequently in order to develop higher quality software day after day.
 
-To know me a bit more, I invite you to discover me a bit more through the [About me](/author/Thibault%20Ruaro) page.
+To know me a bit more, I invite you to discover me through the [About me](/author/Thibault%20Ruaro) page.
 
 # Sharing is my objective
 
-I guess some of you wonders one day whether they should start their own blog ? Well, for me, I've been asking this myself for a long time. I guess I just needed time, and subjects to talk about. Besides, there is a lot of quality blogs on the internet, and I didn't see the point of making my own. Here are some questions that stopped me along the way :
+I guess some of you wonder one day whether they should start their own blog ? Well, for me, I've been asking this myself for a long time. I guess I just needed time, and subjects to talk about. Besides, there is a lot of quality blogs on the internet, and I didn't see the point of making my own. Here are some questions that stopped me along the way :
 * Will I be able to write interesting articles ?
 * Will the subject be attractive ?
 * Will my articles bring something different, another perspective that one did not find on another blog ?
@@ -33,7 +33,7 @@ That's a fair point, as there are dozens of blogs, websites, articles nowadays. 
 * It brings you visibility and transparency regarding your software skills and experiments you do. It is easy for someone to make sure you know what you are talking about.
 * You can freely express yourself, whether by designing your blog, or in the style used to write. 
 * You can talk about any subjects. You could even do an article that is not really technical, but that transcript your point of view about a subject.
-* You can grow at your own pace. Not everyone is a poet, not every one can write perfect articles the first time. Take the time to discover what styles you are more comfortable using, and build something greater upon it.
+* You can grow at your own pace. Not everyone is a poet, not every one can write perfect articles the first time. Take the time to discover what styles you are more comfortable with, and build something greater upon it.
 
 ## What kind of articles to expect ?
 
