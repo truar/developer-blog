@@ -52,6 +52,11 @@ The application will evolve later, but first, we will create a basic `Hello worl
 
 ### Clone the skeleton of the application
 
+// TODO Add folder tress view
+// TODO Split the front and the back by having a root folder for the application
+// application / back
+//             / front
+
 Clone the skeleton application I have created, and remove git from it first. You will have to push the code in your Github repository.
 ```
 git clone https://github.com/truar/blog-resources.git
@@ -76,6 +81,8 @@ java -jar target/gcp-skeleton-0.0.1-SNAPSHOT.jar
 
 Go check the URL `http://localhost:8080`, and you should see `Hello World` displayed.
 ![Skeleton started - First step success](/articles/deploying-an-app-in-gcp-part1/skeleton-started.png)
+
+Note: In a first time, this endpoint will also be used as a healthcheck for Cloud run.
 
 ### Overview
 
@@ -118,8 +125,115 @@ COPY --from=builder /app/target/*.jar /app.jar
 CMD ["java", "-jar", "/app.jar"]
 ```
 
-```
+// TODO : Add Docker prerequisites
+Try building the image locally and then run it to make sure it works as expected
+```shell script
 docker build -t gcp-deploy-cloud-run:latest .
+docker run -d -p 8080:8080 gcp-deploy-cloud-run:latest
+> 6b7fd5ca6136af33589c100d6d45884c304cdaf2299b9f1416a33dc607db08e2
+curl http://localhost:8080/
+> Hello World
+docker stop 6b7fd5ca6136af33589c100d6d45884c304cdaf2299b9f1416a33dc607db08e2
+```
+
+### Create the cloud run service description file
+
+If you are familiar with `kubernetes` you might have seen already the kubernetes description file for your deployment. The process is similar for cloud run. Let's create a `yaml` descriptor file for our cloud run service.
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: gcp-cloudrun-back
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  annotations:
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '3'
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+      - image: gcr.io/${PROJECT_ID}/gcp-cloudrun-back:latest
+        ports:
+          - containerPort: 8080
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 256Mi
+  traffic:
+    - percent: 100
+      latestRevision: true
+```
+> Please update the ${PROJECT_ID} with your own project ID
+
+Let's explain each important part.
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: gcp-cloudrun-back
+  labels:
+    cloud.googleapis.com/location: europe-west1
+```
+* metadata.name: the name of the service being deployed in cloud-run. You can then use this name to get your cloud-run service.
+* metadata.labels.cloud.googleapis.com/location: The region in which you want to deploy your application. I chose europe/west1, but you can choose another one if you want to.
+
+```yaml
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '3'
+```
+* Here we define the maximum number of instance cloud-run is allowed to generate if your service is handling lots of requests. The limit we set is 3, making sure you won't get a nice suprise at the end of month on your GCP invoice
+
+```yaml
+  spec:
+    containerConcurrency: 80
+    timeoutSeconds: 300
+```
+* containerConcurrency: The number of request to handle on a single instance before scaling up. 80 is the default value
+* timeoutSeconds: The time within a response must be returned by your service. Failure to do so will result in a 504 error sent to the client
+
+```yaml
+    containers:
+      - image: gcr.io/${PROJECT_ID}/gcp-cloudrun-back:latest
+        ports:
+          - containerPort: 8080
+```
+* image: the image name the container will execute. As you guessed it, the image needs to be accessible by cloud-run. We will see later how to add the image to Container registry
+* ports.containerPort: the port exposed by your application. The recommendation of Google is to use the environment variable `PORT`. We will do that later.
+ 
+```yaml
+    resources:
+          limits:
+            cpu: 1000m
+            memory: 256Mi
+```
+
+```yaml
+  traffic:
+    - percent: 100
+      latestRevision: true
+
+```
+
+
+
+// Maybe for a second article ?
+### Manually deploying the application using gcloud build
+
+**Gcloud build** is a serverless continuous deployment platform, like CircleCi or TravisCi. By providing a `cloudbuild.yaml`, Gcloud build can execute a series of steps in order to deploy your application on the GCP resources, like Cloud run in our case. Among all features, you can find:
+* Parallel steps execution, if you deploy independent parts
+* View builder logs in real time, to see if your deployment is correctly moving forward
+* Provide a series of image maintained by Google to easily deploy application on GCP resources without too much overhead
+
+Let's create a `cloudbuild.yaml` file at the root of our project:
+```yaml
+
 ```
 
 ## Resources
@@ -127,3 +241,5 @@ docker build -t gcp-deploy-cloud-run:latest .
 * [Documentation for Cloud Run](https://cloud.google.com/run/docs/choosing-a-platform)
 * [Pricing of Cloud Run](https://cloud.google.com/run/pricing#cloudrun-pricing)
 * [Caching Maven dependencies in a multistage build](https://medium.com/@nieldw/caching-maven-dependencies-in-a-docker-build-dca6ca7ad612)
+* [Docker build command](https://docs.docker.com/engine/reference/commandline/build/)
+* [Docker run command](https://docs.docker.com/engine/reference/commandline/run/)
