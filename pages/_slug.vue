@@ -55,7 +55,7 @@ export default {
         },
         {
           hid: 'og:url',
-          content:process.env.BASE_URL || 'http://localhost:3000' + '/' + this.article.slug,
+          content: process.env.BASE_URL || 'http://localhost:3000' + '/' + this.article.slug,
           property: 'og:url'
         },
         {
