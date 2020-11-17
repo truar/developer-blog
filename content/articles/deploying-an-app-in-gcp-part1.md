@@ -4,6 +4,7 @@ description: In this first part, we focus on deploying a Spring application to C
 image: /articles/deploying-an-app-in-gcp-part1/main.jpg
 alt: The GCP logo
 readingTime: 75 minutes
+createdAt: 2020-11-17
 author:
   name: Thibault Ruaro
   bio: Thibault is a GCP Professional Architect, with a passion for great code. He likes reading about code best practices and staying up-to-date concerning the latest IT subject. He is also an official Spring Core Trainer, where he gives training at Zenika on a monthly basis.

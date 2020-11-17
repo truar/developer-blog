@@ -4,6 +4,7 @@ description: A quick introduction to who I am, and the reasons I've decided to s
 image: /articles/welcome/welcome-to-my-blog.jpg
 alt: A welcome sign
 readingTime: 13 minutes
+createdAt: 2020-11-14
 author:
   name: Thibault Ruaro
   bio: I am a GCP Professional Architect, with a passion for great code. I like reading about code best practices and staying up-to-date concerning the latest IT subject. I am also an official Spring Core Trainer, where I give training at Zenika on a monthly basis.
