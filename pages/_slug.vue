@@ -36,7 +36,34 @@ export default {
   },
   head() {
     return {
-      title: this.article.title
+      title: this.article.title,
+      meta: [
+        {
+          hid: 'description',
+          content: this.article.description,
+          name: 'description'
+        },
+        {
+          hid: 'og:title',
+          content: this.article.title,
+          property: 'og:title'
+        },
+        {
+          hid: 'og:description',
+          content: this.article.description,
+          property: 'og:description'
+        },
+        {
+          hid: 'og:url',
+          content:process.env.BASE_URL || 'http://localhost:3000' + '/' + this.article.slug,
+          property: 'og:url'
+        },
+        {
+          hid: 'og:image',
+          content: process.env.BASE_URL || 'http://localhost:3000' + this.article.image,
+          property: 'og:image'
+        }
+      ]
     }
   },
   async asyncData({ $content, params }) {
