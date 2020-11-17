@@ -22,7 +22,7 @@ export default {
       {
         hid: 'og:url',
         property: 'og:url',
-        content: process.env.BASE_URL || 'http://localhost:3000'
+        content: process.env.URL || 'http://localhost:3000'
       }
     ],
     link: [
