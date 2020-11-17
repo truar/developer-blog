@@ -12,7 +12,12 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: 'Being a software engineer is a passion ! Technical articles about Software Development, GCP and Cloud technologies, Spring Framework, Software Craftsmanship. Come read and know me better. '
+        content: 'Being a software engineer is a passion ! Technical articles about Software Development, GCP and Cloud technologies, Spring Framework, Software Craftsmanship. Come read and know me better.'
+      },
+      {
+        hid: 'og:description',
+        name: 'og:description',
+        content: 'Being a software engineer is a passion ! Technical articles about Software Development, GCP and Cloud technologies, Spring Framework, Software Craftsmanship. Come read and know me better.'
       },
       {
         hid: 'og:type',
@@ -23,6 +28,16 @@ export default {
         hid: 'og:url',
         property: 'og:url',
         content: process.env.URL || 'http://localhost:3000'
+      },
+      {
+        hid: 'twitter:card',
+        property: 'twitter:card',
+        content: 'summary'
+      },
+      {
+        hid: 'twitter:creator',
+        property: 'twitter:creator',
+        content: '@ThibaultRuaro'
       }
     ],
     link: [
