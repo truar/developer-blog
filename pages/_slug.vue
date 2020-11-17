@@ -127,12 +127,65 @@ article h1 {
   margin-bottom: 20px;
 }
 
-.icon.icon-link {
+.nuxt-content h1,
+.nuxt-content h2,
+.nuxt-content h3,
+.nuxt-content h4,
+.nuxt-content h5,
+.nuxt-content h6 {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.nuxt-content h1:hover .icon.icon-link,
+.nuxt-content h2:hover .icon.icon-link,
+.nuxt-content h3:hover .icon.icon-link,
+.nuxt-content h4:hover .icon.icon-link,
+.nuxt-content h5:hover .icon.icon-link,
+.nuxt-content h6:hover .icon.icon-link {
   background-image: url('~assets/svg/icon-hashtag.svg');
   display: inline-block;
+  margin-left: 5px;
+}
+
+.nuxt-content h1:hover .icon.icon-link,
+.nuxt-content h2:hover .icon.icon-link {
   width: 20px;
   height: 20px;
   background-size: 20px 20px;
+}
+
+.nuxt-content h3:hover .icon.icon-link {
+  width: 18px;
+  height: 18px;
+  background-size: 18px 18px;
+}
+
+.nuxt-content h4:hover .icon.icon-link,
+.nuxt-content h5:hover .icon.icon-link,
+.nuxt-content h6:hover .icon.icon-link {
+  width: 16px;
+  height: 16px;
+  background-size: 16px 16px;
+}
+
+.nuxt-content blockquote {
+  padding: 0 1em;
+  color: #6A737D;
+  border-left: .25em solid #DFE2E5;
+}
+
+.nuxt-content p code, .nuxt-content blockquote code, .nuxt-content ul li code {
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(27, 31, 35, 0.05);
+  border-radius: 6px;
+}
+
+.nuxt-content pre {
+  border-radius: 6px;
 }
 
 </style>
