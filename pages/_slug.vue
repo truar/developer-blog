@@ -55,12 +55,12 @@ export default {
         },
         {
           hid: 'og:url',
-          content: process.env.URL || 'http://localhost:3000' + '/' + this.article.slug,
+          content: (process.env.URL || 'http://localhost:3000') + '/' + this.article.slug,
           property: 'og:url'
         },
         {
           hid: 'og:image',
-          content: process.env.URL || 'http://localhost:3000' + this.article.image,
+          content: (process.env.URL || 'http://localhost:3000') + this.article.image,
           property: 'og:image'
         }
       ]
