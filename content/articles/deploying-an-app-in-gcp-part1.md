@@ -1,7 +1,7 @@
 ---
 title: Deploying your application in GCP - Part 1
 description: In this first part, we focus on deploying a Spring application to Cloud Run easily.
-image: /articles/deploying-your-app/main.jpg
+image: /articles/deploying-an-app-in-gcp-part1/main.jpg
 alt: The GCP logo
 readingTime: 50 minutes
 author:
@@ -74,7 +74,7 @@ I invite you to create a skeleton using the [Spring Initializer website](https:/
 
 This generates a zip file you can unzip. Let's review the important part together:
 
-In `/pom.xml`, make sure you have a dependency to `spring-boot-starter-web` and the plugin `spring-boot-maven-plugin`. This will activate Spring Boot's autoconfiguration to embed a Tomcat, and enable to create the Fat JAR.
+In `/pom.xml`, make sure you have a dependency to `spring-boot-starter-web` and the plugin `spring-boot-maven-plugin`. This will activate Spring Boot's autoconfiguration to embed a Tomcat, and enable the Fat JAR generation.
 ```xml
 ...
 <dependency>
@@ -92,7 +92,7 @@ In `/pom.xml`, make sure you have a dependency to `spring-boot-starter-web` and 
 </build>
 ```
 
-In `dev.truaro.blog.gcpcloudrunback.GcpCloudRunBackOfficeApplication`
+In `src/main/java/dev/truaro/blog/gcpcloudrunback/GcpCloudRunBackOfficeApplication.java`
 ```java
 @SpringBootApplication
 public class GcpCloudRunBackOfficeApplication {
@@ -100,7 +100,6 @@ public class GcpCloudRunBackOfficeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GcpCloudRunBackOfficeApplication.class, args);
 	}
-
 }
 ```
 Classic `@SpringBootApplication` class to start Spring and the Application Context.
@@ -109,7 +108,7 @@ Classic `@SpringBootApplication` class to start Spring and the Application Conte
 
 Let's add a simple controller that says `Hello World` on a GET request at `/`. 
 
-In `dev.truaro.blog.gcpcloudrunback.HelloWorldController`
+Create a file `src/main/java/dev/truaro/blog/gcpcloudrunback/HelloWorldController.java`
 ```java
 @RestController
 public class HelloWorldController {
@@ -118,7 +117,7 @@ public class HelloWorldController {
     public String helloWorld() {
         return "Hello World";
     }
-    
+   
 }
 ```
 
@@ -135,6 +134,7 @@ java -jar target/gcpcloudrunback-0.0.1-SNAPSHOT.jar
 ```
 
 Go check the URL `http://localhost:8080`, and you should see `Hello World` displayed.
+
 ![Skeleton started - First step success](/articles/deploying-an-app-in-gcp-part1/skeleton-started.png)
 
 ## Overview
@@ -147,7 +147,7 @@ Before talking about Continuous Deployment, let's first deploy our application m
 
 ## Quick words on Cloud Run
 
-Cloud Run "Fully managed" is a service provided by GCP that allows you to run a container (Docker for instance) on the Google infrastructure. It has many advantages:
+**Cloud Run "Fully managed"** is a service provided by GCP that allows you to run a container (Docker for instance) on the Google infrastructure. It has many advantages:
 * The cost is very attractive. Indeed, you pay only for the CPU allocated, and the CPU is allocated only when your container receives an HTTP request. In other words, you only pay when your container is being used.
 * You run a container, which makes you independent of the runtime environment provided by Google in a case of App engine Standard for instance. Besides, it is easy for you to test your container locally.
 * As a container, you can easily host your application elsewhere, in another provider for instance.
@@ -157,7 +157,7 @@ Cloud Run "Fully managed" is a service provided by GCP that allows you to run a 
 ## Containerize the application
 
 Let's add this Dockerfile at the root of our application. We will used a multistage build, as it is an even more portable solution.
-```Dockerfile
+```dockerfile
 FROM maven:3.6.3-openjdk-11-slim as builder
 
 WORKDIR /app
@@ -228,7 +228,7 @@ spec:
     - percent: 100
       latestRevision: true
 ```
-> Please update the ${PROJECT_ID} with your own project ID
+> Please update the `${PROJECT_ID}` with your own project ID
 
 Let's explain each important part.
 ```yaml
@@ -239,8 +239,8 @@ metadata:
   labels:
     cloud.googleapis.com/location: europe-west1
 ```
-* metadata.name: the name of the service being deployed in Cloud Run. You can then use this name to get your Cloud Run service.
-* metadata.labels.cloud.googleapis.com/location: The region in which you want to deploy your application. I chose europe/west1, but you can choose another one if you want to.
+> * `metadata.name`: the name of the service being deployed in Cloud Run. You can then use this name to get your Cloud Run service.
+> * `metadata.labels.cloud.googleapis.com/location`: The region in which you want to deploy your application. I chose europe/west1, but you can choose another one if you want to.
 
 ```yaml
 spec:
@@ -249,7 +249,7 @@ spec:
       annotations:
         autoscaling.knative.dev/maxScale: '3'
 ```
-* Here we define the maximum number of instance Cloud Run is allowed to generate if your service is handling lots of requests. The limit we set is 3, making sure you won't get a nice suprise at the end of month on your GCP invoice
+> * Here we define the maximum number of instance Cloud Run is allowed to generate if your service is handling lots of requests. The limit we set is 3, making sure you won't get a nice suprise at the end of month on your GCP invoice
 
 ```yaml
   spec:
@@ -257,15 +257,15 @@ spec:
     containerConcurrency: 80
     timeoutSeconds: 300
 ```
-* serviceAccountName: It is a good practice to use specific service account in order to respect more easily the Principle of least privilege. Gives this service account only access to what it is allowed.
-* containerConcurrency: The number of request to handle on a single instance before scaling up. 80 is the default value
-* timeoutSeconds: The time within a response must be returned by your service. Failure to do so will result in a 504 error sent to the client
+> * `serviceAccountName`: It is a good practice to use specific service account in order to respect more easily the Principle of least privilege. Gives this service account only access to what it is allowed.
+> * `containerConcurrency`: The number of request to handle on a single instance before scaling up. 80 is the default value
+> * `timeoutSeconds`: The time within a response must be returned by your service. Failure to do so will result in a 504 error sent to the client
 
 ```yaml
     containers:
       - image: gcr.io/${PROJECT_ID}/gcp-cloudrun-back:latest
 ```
-* image: the image name the container will execute. As you guessed it, the image needs to be accessible by Cloud Run. We will see later how to add the image to Container registry
+> * `image`: the image name the container will execute. As you guessed it, the image needs to be accessible by Cloud Run. We will see later how to add the image to Container registry
 
 ```yaml
     resources:
@@ -273,30 +273,31 @@ spec:
             cpu: 1000m
             memory: 256Mi
 ```
-* cpu: we allocate the equivalence of 1 CPU to our service. [Read more here](https://cloud.google.com/run/docs/configuring/cpu)
-* memory: we allocate 256Mi to the container. Please consider this carefully, as your container can run out of memory on production. [Read more here](https://cloud.google.com/run/docs/configuring/memory-limits)
+> * `cpu`: we allocate the equivalence of 1 CPU to our service. [Read more here](https://cloud.google.com/run/docs/configuring/cpu)
+> * `memory`: we allocate 256Mi to the container. Please consider this carefully, as your container can run out of memory on production. [Read more here](https://cloud.google.com/run/docs/configuring/memory-limits)
 
 ```yaml
   traffic:
     - percent: 100
       latestRevision: true
 ```
-* At each revision, the new one takes 100% of the incoming traffic
+> * At each revision, the new one takes 100% of the incoming traffic
 
 ## Deploy to Cloud Run
 Now we are all setup, let's deploy our first revision, and make it public.
 
-1. Enable the API
+1. Enable the Cloud Run API
 ```shell script
 gcloud services enable run.googleapis.com
 ```
 
-2. Create a service account for the service. Ensure the respect of the **Principle of least privileges**.
+2. Create a **service account** for the Cloud Run service. This ensures the respect of the **Principle of least privilege**.
 ```
 gcloud iam service-accounts create gcp-cloudrun-back \
     --description="Service account that executes the gcp-cloudrun-back application" \
     --display-name="GCP Cloudrun Back service account"
 ```
+
 3. Deploy on Cloud Run (it might take some minutes)
 ```shell script
 gcloud beta run services replace gcp-cloudrun-back.yaml \
@@ -304,8 +305,9 @@ gcloud beta run services replace gcp-cloudrun-back.yaml \
   --region=europe-west1
 ```
 > Applying new configuration to Cloud Run service [gcp-cloudrun-back] in project [truaro-resources] region [europe-west1]
-  New configuration has been applied to service [gcp-cloudrun-back].
-  URL: **https://gcp-cloudrun-back-a75acdipmq-ew.a.run.app**
+>  New configuration has been applied to service [gcp-cloudrun-back].
+>
+>  URL: **https://gcp-cloudrun-back-a75acdipmq-ew.a.run.app**
 
 4. Allow public access to invoke your service
 ```shell script
@@ -315,19 +317,13 @@ gcloud run services add-iam-policy-binding gcp-cloudrun-back \
   --member="allUsers" \
   --role="roles/run.invoker"
 ```
-> Updated IAM policy for service [gcp-cloudrun-back].
-  bindings:
-  - members:
-    - allUsers
-    role: roles/run.invoker
-  etag: BwW0TxOeH9c=
-  version: 1
+> Updated IAM policy for service [gcp-cloudrun-back]
 
 5. Check if the service is responding (the first request could be a bit long because of the startup time)
 ```shell script
 curl https://gcp-cloudrun-back-a75acdipmq-ew.a.run.app
-> Hello World
 ```
+> Hello World
 
 Check your container logs ([Follow this](https://cloud.google.com/run/docs/logging)). Here are mine:
 ```
@@ -355,7 +351,7 @@ Check your container logs ([Follow this](https://cloud.google.com/run/docs/loggi
 
 As you could see, my application took **7.221 seconds to start**. In some infrastructure, this could be too long... I will leave the startup time optimization for another article.
 
-## Summary
+# Summary
 
 In this article, we covered:
 * How to create a Spring Boot application with a single non-protected endpoint
