@@ -372,6 +372,7 @@ In further articles, we will cover subjects like:
 
 ## Resources
 
+* [See the entire code on Github](https://github.com/truar/blog-resources.git)
 * [Documentation for Cloud Run](https://cloud.google.com/run/docs/choosing-a-platform)
 * [Pricing of Cloud Run](https://cloud.google.com/run/pricing#cloudrun-pricing)
 * [Caching Maven dependencies in a multistage build](https://medium.com/@nieldw/caching-maven-dependencies-in-a-docker-build-dca6ca7ad612)
