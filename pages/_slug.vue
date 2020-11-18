@@ -222,7 +222,11 @@ article h1 {
   }
 }
 
-.nuxt-content p code, .nuxt-content blockquote code, .nuxt-content ul li code {
+.nuxt-content li ul {
+  margin-bottom: 0;
+}
+
+.nuxt-content p code, .nuxt-content blockquote code, .nuxt-content li code {
   padding: .2em .4em;
   margin: 0;
   font-size: 85%;
