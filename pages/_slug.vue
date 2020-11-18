@@ -209,6 +209,7 @@ article h1 {
   font-size: 85%;
   background-color: rgba(27, 31, 35, 0.05);
   border-radius: 6px;
+  word-wrap: break-word;
 }
 
 .nuxt-content pre {
