@@ -130,20 +130,29 @@ public class HelloWorldController {
    
 }
 ```
-
 Briefly, this class sends a 200 HTTP Response containing the body `Hello World` in plain text:
 * `@RestController` -> the class is returning only data to the clients. This annotation bypasses the view resolver of `Spring MVC`.
 * `@GetMapping` -> Listen a GET request on the endpoint `/`.
 
+## Configure the server port
+
+A recommendation of Cloud Run is to enable your application to listen the port provided by the PORT environment variable ([for more information, check this link](https://cloud.google.com/run/docs/configuring/containers)).
+
+To do so with Spring, just a property to the `application.properties` file:
+```
+server.port=${PORT:8080}
+```
+> If you want to set a property based on a environment variable with a default, use this: ${MY_ENV_VARIABLE:my default value}. Here, we get the PORT from the environment, or we fall back to 8080.
+
 ## Request the server to see if it works
 
-Make sure your controller can handle requests by executing:
+Make sure your controller can handle requests with a provided PORT by executing:
 ```shell script
 ./mvnw install
-java -jar target/gcpcloudrunback-0.0.1-SNAPSHOT.jar
+PORT=8088 java -jar target/gcpcloudrunback-0.0.1-SNAPSHOT.jar
 ```
 
-Go check the URL `http://localhost:8080`, and you should see `Hello World` displayed.
+Go check the URL `http://localhost:8088`, and you should see `Hello World` displayed.
 
 ![Skeleton started - First step success](/articles/deploying-an-app-in-gcp-part1/skeleton-started.png)
 
