@@ -3,7 +3,7 @@ title: Deploying your application in GCP - Part 1
 description: In this first part, we focus on deploying a Spring application to Cloud Run easily.
 image: /articles/deploying-an-app-in-gcp-part1/main.jpg
 alt: The GCP logo
-readingTime: 75 minutes
+readingTime: 30 minutes
 createdAt: 2020-11-17
 author:
   name: Thibault Ruaro
@@ -60,7 +60,7 @@ Therefore, I suggest you to install Docker locally. [Here are the resources to d
 You can now start building the first application. We will create a `Hello world` application, that exposes an endpoint
 The application can evolve later, but let's keep it simple and build it step by step. Just like software development should be done gradually, deploying your application with short iterations shortens the feedback loop. Detect bugs as soon as they appear to reduce the time needed to fix it. 
 
-## Create the application backoffice
+## Create the application backend
 
 I invite you to create a skeleton using the [Spring Initializer website](https://start.spring.io). Here are the information I use:
 * Maven project
@@ -68,7 +68,7 @@ I invite you to create a skeleton using the [Spring Initializer website](https:/
 * Spring Boot version: 2.4.0
 * Group: dev.truaro.blog
 * Artifact: gcpcloudrunback
-* Name: GCP Cloud Run Back office
+* Name: GCP Cloud Run Backend
 * Description: My awesome back office fully managed by Cloud Run
 * Package name: dev.truaro.blog.gcpcloudrunback
 * Dependencies: Spring Web
@@ -93,13 +93,13 @@ In `/pom.xml`, make sure you have a dependency to `spring-boot-starter-web` and 
 </build>
 ```
 
-In `src/main/java/dev/truaro/blog/gcpcloudrunback/GcpCloudRunBackOfficeApplication.java`
+In `src/main/java/dev/truaro/blog/gcpcloudrunback/GcpCloudRunBackendApplication.java`
 ```java
 @SpringBootApplication
-public class GcpCloudRunBackOfficeApplication {
+public class GcpCloudRunBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GcpCloudRunBackOfficeApplication.class, args);
+		SpringApplication.run(GcpCloudRunBackendApplication.class, args);
 	}
 }
 ```
