@@ -201,6 +201,25 @@ article h1 {
   padding: 0 1em;
   color: #6A737D;
   border-left: .25em solid #DFE2E5;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+@media screen and (min-width: 32.375em) {
+  .nuxt-content blockquote {
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+}
+
+.nuxt-content blockquote ul, .nuxt-content blockquote ol {
+  margin: 0 0 1.75em 1em;
+}
+
+@media screen and (min-width: 32.375em) {
+  .nuxt-content blockquote ul, .nuxt-content blockquote ol {
+    margin: 0 0 1.75em 2em;
+  }
 }
 
 .nuxt-content p code, .nuxt-content blockquote code, .nuxt-content ul li code {
@@ -210,6 +229,10 @@ article h1 {
   background-color: rgba(27, 31, 35, 0.05);
   border-radius: 6px;
   word-wrap: break-word;
+}
+
+.nuxt-content ul li, .nuxt-content p {
+  word-break: break-word;
 }
 
 .nuxt-content pre {
