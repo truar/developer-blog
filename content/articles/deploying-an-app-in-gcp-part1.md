@@ -73,7 +73,16 @@ I invite you to create a skeleton using the [Spring Initializer website](https:/
 * Package name: dev.truaro.blog.gcpcloudrunback
 * Dependencies: Spring Web
 
-This generates a zip file you can unzip. Let's review the important part together:
+This generates a zip file you can unzip. Having in mind what comes after this article, I recommend you to have the following folder structure:
+```
+* gcpapplication
+|--- gcpcloudrunback <- unzipped folder
+|--- gcpfirebasefront <- will come in another article
+```
+
+**Please note for the rest of the article, the root folder is `gcpapplication/gcpcloudrunback`**
+
+Let's review the important part together:
 
 In `/pom.xml`, make sure you have a dependency to `spring-boot-starter-web` and the plugin `spring-boot-maven-plugin`. This will activate Spring Boot's autoconfiguration to embed a Tomcat, and enable the Fat JAR generation.
 ```xml
