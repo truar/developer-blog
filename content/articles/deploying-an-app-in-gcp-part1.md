@@ -27,7 +27,7 @@ In this series of articles, we will see how to deploy step by step a complete ap
 
 If you don't have it, I highly recommend you to create one, right now. I'll be using a public repository hosted on my account. My examples will use my repository in the command, but you will need yours when we will communicate with Cloud Repository. [Click here to create an account on Github](https://github.com/join?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home)
 
-Also, make sure `Git` is installed on your machine, and you can execute action like `git clone...`
+Also, make sure `Git` is installed on your machine, and you can execute commands like `git clone...`
 
 ### A Google Cloud Platform Account
 
@@ -35,14 +35,14 @@ The examples will deploy your application in your GCP environment. To do so, you
 
 If you create the account, you will get $300 (270€) credit to use their infrastructure during a year. Please note you will have to use a credit card to create the account on Google. [Click here to sign up on GCP](https://cloud.google.com/free)
 
-If you already have an account, please note that the things will we do together will incur very small fees on your account. If you follow the articles rigorously, you might have no more than 1€ on your billing account at the end of the month. 
+If you already have an account, please note things we do together will incur very small fees on your account. If you follow all articles rigorously, you might have no more than 1€ on your billing account at the end of the month. 
 
-Make sure you also create a first project that will contains the resources created in the article.
+Make sure you also create a first project that will contain the resources created in the articles.
 
 #### Install the gcloud CLI
 
 Even if you could use the Cloud Shell, I recommend you using the `gcloud` CLI on your machine. Trust me, it is really handy. [To install the CLI, click here](https://cloud.google.com/sdk/docs/install)
-To make sure the CLI is installed in your machine, you can run `gcloud version` in your shell.
+Check the CLI is installed on your machine, by running `gcloud version` in your shell.
 
 Then, execute the following command, to make sure you are pointing to the correct project
 ```
@@ -57,7 +57,7 @@ Therefore, I suggest you to install Docker locally. [Here are the resources to d
 
 # Building the Spring application
 
-You can now start building the first application. We will create a `Hello world` application, that exposes an endpoint
+You can now start building the first application. We will create a `Hello world` application, that exposes an endpoint.
 The application can evolve later, but let's keep it simple and build it step by step. Just like software development should be done gradually, deploying your application with short iterations shortens the feedback loop. Detect bugs as soon as they appear to reduce the time needed to fix it. 
 
 ## Create the application backend
@@ -80,7 +80,7 @@ This generates a zip file you can unzip. Having in mind what comes after this ar
 |--- gcpfirebasefront <- will come in another article
 ```
 
-**Please note for the rest of the article, the root folder is `gcpapplication/gcpcloudrunback`**
+**Please note for the rest of this article, the root folder is `gcpapplication/gcpcloudrunback`**
 
 Let's review the important part together:
 
@@ -132,8 +132,8 @@ public class HelloWorldController {
 ```
 
 Briefly, this class sends a 200 HTTP Response containing the body `Hello World` in plain text:
-* `@RestController` -> the class is returning only data to the clients. This annotation bypasses the view resolver of `Spring MVC`
-* `@GetMapping` -> Listen a GET request on the endpoint `/`
+* `@RestController` -> the class is returning only data to the clients. This annotation bypasses the view resolver of `Spring MVC`.
+* `@GetMapping` -> Listen a GET request on the endpoint `/`.
 
 ## Request the server to see if it works
 
@@ -166,7 +166,7 @@ Before talking about Continuous Deployment, let's first deploy our application m
 
 ## Containerize the application
 
-Let's add this Dockerfile at the root of our application. We will used a multistage build, as it is an even more portable solution.
+Let's add this Dockerfile at the root of our application. We will use a multistage build, as it is an even more portable solution.
 ```dockerfile
 FROM maven:3.6.3-openjdk-11-slim as builder
 
@@ -198,7 +198,7 @@ curl http://localhost:8080/
 docker stop 6b7fd5ca6136af33589c100d6d45884c304cdaf2299b9f1416a33dc607db08e2
 ```
 
-Then, we need it to push it to our repository. Run this command:
+Then, we need to push it to our repository. Run this command:
 ```shell script
 # Connect docker to google registry. This put your credentials for Cloud Registry into your Docker configuration to authenticate on GCP
 gcloud auth configure-docker
@@ -210,7 +210,7 @@ docker push gcr.io/truaro-resources/gcp-cloudrun-back:latest
 
 ## Create the Cloud Run service description file
 
-If you are familiar with `kubernetes` you might have seen already the kubernetes description file. The process is similar for Cloud Run. Let's create a `/gcp-cloudrun-back.yaml` descriptor file for our Cloud Run service, and go through it step by step.
+If you are familiar with `kubernetes` you might have seen already the kubernetes description file. The process is similar for Cloud Run. Let's create a `/gcp-cloudrun-back.yaml` description file for our Cloud Run service, and go through it step by step.
 ```yaml
 apiVersion: serving.knative.dev/v1
 kind: Service
@@ -259,7 +259,7 @@ spec:
       annotations:
         autoscaling.knative.dev/maxScale: '3'
 ```
-> * Here we define the maximum number of instance Cloud Run is allowed to generate if your service is handling lots of requests. The limit we set is 3, making sure you won't get a nice suprise at the end of month on your GCP invoice
+> * Here we define the maximum number of instances Cloud Run is allowed to generate if your service is handling lots of requests. The limit we set is 3, making sure you won't get a nice surprise at the end of month on your GCP invoice.
 
 ```yaml
   spec:
@@ -268,14 +268,14 @@ spec:
     timeoutSeconds: 300
 ```
 > * `serviceAccountName`: It is a good practice to use specific service account in order to respect more easily the Principle of least privilege. Gives this service account only access to what it is allowed.
-> * `containerConcurrency`: The number of request to handle on a single instance before scaling up. 80 is the default value
-> * `timeoutSeconds`: The time within a response must be returned by your service. Failure to do so will result in a 504 error sent to the client
+> * `containerConcurrency`: The number of request to handle on a single instance before scaling up. 80 is the default value.
+> * `timeoutSeconds`: The time within a response must be returned by your service. Failure to do so will result in a 504 error sent to the client.
 
 ```yaml
     containers:
       - image: gcr.io/${PROJECT_ID}/gcp-cloudrun-back:latest
 ```
-> * `image`: the image name the container will execute. As you guessed it, the image needs to be accessible by Cloud Run. We will see later how to add the image to Container registry
+> * `image`: The image name the container will execute. As you guessed it, the image needs to be accessible by Cloud Run. We will see later how to add the image to Container registry.
 
 ```yaml
     resources:
@@ -283,20 +283,20 @@ spec:
             cpu: 1000m
             memory: 256Mi
 ```
-> * `cpu`: we allocate the equivalence of 1 CPU to our service. [Read more here](https://cloud.google.com/run/docs/configuring/cpu)
-> * `memory`: we allocate 256Mi to the container. Please consider this carefully, as your container can run out of memory on production. [Read more here](https://cloud.google.com/run/docs/configuring/memory-limits)
+> * `cpu`: We allocate the equivalence of 1 CPU to our service. [Read more here](https://cloud.google.com/run/docs/configuring/cpu).
+> * `memory`: We allocate 256Mi to the container. Please consider this carefully, as your container can run out of memory on production. [Read more here](https://cloud.google.com/run/docs/configuring/memory-limits).
 
 ```yaml
   traffic:
     - percent: 100
       latestRevision: true
 ```
-> * At each revision, the new one takes 100% of the incoming traffic
+> * At each revision, the new one takes 100% of the incoming traffic.
 
 ## Deploy to Cloud Run
 Now we are all setup, let's deploy our first revision, and make it public.
 
-1. Enable the Cloud Run API
+1. Enable the Cloud Run API.
 ```shell script
 gcloud services enable run.googleapis.com
 ```
@@ -308,7 +308,7 @@ gcloud iam service-accounts create gcp-cloudrun-back \
     --display-name="GCP Cloudrun Back service account"
 ```
 
-3. Deploy on Cloud Run (it might take some minutes)
+3. Deploy on Cloud Run (it might take some minutes).
 ```shell script
 gcloud beta run services replace gcp-cloudrun-back.yaml \
   --platform=managed \
@@ -319,7 +319,7 @@ gcloud beta run services replace gcp-cloudrun-back.yaml \
 >
 >  URL: **https://gcp-cloudrun-back-a75acdipmq-ew.a.run.app**
 
-4. Allow public access to invoke your service
+4. Allow public access to invoke your service.
 ```shell script
 gcloud run services add-iam-policy-binding gcp-cloudrun-back \
   --platform=managed \
@@ -329,7 +329,7 @@ gcloud run services add-iam-policy-binding gcp-cloudrun-back \
 ```
 > Updated IAM policy for service [gcp-cloudrun-back]
 
-5. Check if the service is responding (the first request could be a bit long because of the startup time)
+5. Check if the service is responding (the first request could be a bit long because of the startup time).
 ```shell script
 curl https://gcp-cloudrun-back-a75acdipmq-ew.a.run.app
 ```
