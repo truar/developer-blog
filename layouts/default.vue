@@ -1,5 +1,8 @@
 <template>
   <div id="page" class="hfeed site">
+    <client-only>
+      <cookie-alert></cookie-alert>
+    </client-only>
     <app-header></app-header>
     <div id="content-wrapper" class="content-wrapper">
       <div id="content" class="site-content">
@@ -53,5 +56,9 @@
     max-width: 740px;
     margin: 0 auto;
   }
+}
+
+body {
+  margin: 0;
 }
 </style>
