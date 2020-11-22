@@ -142,7 +142,7 @@ To do so with Spring, just a property to the `application.properties` file:
 ```
 server.port=${PORT:8080}
 ```
-> If you want to set a property based on a environment variable with a default, use this: ${MY_ENV_VARIABLE:my default value}. Here, we get the PORT from the environment, or we fall back to 8080.
+> If you want to set a property based on an environment variable with a default, use this: ${MY_ENV_VARIABLE:my default value}. Here, we get the PORT from the environment, or we fall back to 8080.
 
 ## Request the server to see if it works
 
