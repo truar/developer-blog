@@ -1,6 +1,6 @@
 ---
-title: Deploying your application in GCP - Part 2
-description: In this second part, we create a continuous deployment pipeline using Cloud Build and Cloud Source Repositories.
+title: Continuous Deployment pipeline with Cloud Build on Cloud Run
+description: Part 2 of deploying an app in GCP. In this second part, we create a continuous deployment pipeline using Cloud Build and Cloud Source Repositories.
 image: /articles/deploying-an-app-in-gcp-part2/main.jpg
 alt: The GCP logo
 readingTime: 30 minutes
