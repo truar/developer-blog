@@ -13,7 +13,7 @@ author:
 
 # Container, Dependency and IOC
 ## What is dependency injection and what are the advantages of using it?
-Dependency injection is a development pattern where your objects is handed all its dependencies. It has many advantages:
+Dependency injection is a development pattern where your object is handed all its dependencies. It has many advantages:
 * Promotes programing by interfaces
 * Improves testability by easily changing the implementation of your dependency
 * Allows for centralized control over object lifecycle
@@ -45,7 +45,6 @@ public class MyApplication {
         ApplicationContext ctx = SpringApplication.run(ApplicationConfiguration.class);
     }
 }
-
 ```
 ## Can you describe the lifecycle of a Spring Bean in an ApplicationContext?
 On a very high-level, the lifecycle of a Spring Bean can be summarized this way:
@@ -63,7 +62,7 @@ On a very high-level, the lifecycle of a Spring Bean can be summarized this way:
             * Methods annotated by `@PostConstruct`
             * Calling `InitializingBean.afterPropertiesSet`
             * Methods designed by `@Bean(initMethod="myInitMethod")`
-        * At last, process the bean again through `BeanPostProcessor.postProcessAfterInitialization()` -> once again, a proxy or your bean is returned.
+        * At last, process the bean again through `BeanPostProcessor.postProcessAfterInitialization()` -> once again, returns a proxy or your bean.
     4. The bean is finally created and ready to use
     
 ## How are you going to create an ApplicationContext in an integration test?
@@ -73,24 +72,24 @@ In integration tests, either:
 
 ```java
 @SpringJunitConfig(ApplicationConfiguration.class)
-public class MyTestClass {
+public class ApplicationTest {
     @Autowired
-    private MyBean aBean; 
+    private MemberService memberService; 
 }
 ```
 > The Application Context is created only once for your test class. Consider carefully your Bean regarding immutability, stateless or synchronization.
  
 * Or create programmatically the application context in a setup method, and use the Application Context to retrieve the bean manually.
 ```java
-public class MyTestClass {
+public class ApplicationTest {
     
-    private MyBean aBean;    
+    private MemberService memberService;    
 
     @BeforeEach
     public void setup() {
         ApplicationContext ctx = SpringApplication.run(ApplicationConfiguration.class);
     
-        aBean = ctx.getBean(MyBean.class);
+        memberService = ctx.getBean(MemberService.class);
     }
 }
 ```
@@ -103,10 +102,9 @@ Using Spring Boot with `SpringApplication.run()` registers a hook on the JVM whe
 
 > If the JVM does not stop gracefully, the `close()` is not called and the `@PreDestroy` not invoked.
 
-
 ## Can you describe:
 ### Dependency injection using Java configuration?
-In Java configuration (i.e class annotated with `@Configuration`), Spring relies on `@Configuration` class to find the bean you want to create and make sure the `@Bean` methods are invoked. You can have dependencies injection in 3 ways :
+In Java configuration (i.e class annotated with `@Configuration`), Spring relies on `@Configuration` class to find the beans you want to create and make sure the `@Bean` methods are invoked. You can have dependencies injection in 3 ways :
 * By adding a parameter in the `@Bean` method. In the example, the bean `memberRepository` will be injected by Spring in `memberService` method.
 ```java
 @Configuration
@@ -122,7 +120,7 @@ public class ApplicationConfiguration {
     }
 }
 ```
-> Note this is my preferred way, as it is consistent, no matter if you choose to split the configuration file
+> Note this is my preferred way, as it is consistent, no matter if you choose to split the configuration file or not
 
 * By calling internal `@Bean` method directly. In the example, dependency injection occurs when calling the `memberRepository()` method.
 ```java
@@ -144,6 +142,16 @@ public class ApplicationConfiguration {
 
 * When using multiple Configuration file (with `@Import`), you can have dependency injection at the Configuration class level. Here Spring injects the dependencies when calling the constructor of `ApplicationConfiguration`:
 ```java
+@Configuration
+@Import(ApplicationConfiguration.class)
+public class RepositoryConfigurationWithImport {
+
+    @Bean
+    public MemberRepository memberRepository() {
+        return new MemberRepository();
+    }
+}
+
 @Configuration
 public class ApplicationConfiguration {
     
@@ -170,7 +178,7 @@ Inside those classes, Spring will:
     * or the **default constructor**.
 * Inject dependencies in fields and methods annotated by `@Autowired`.
 
-Stereotypes of `@Component`, among the most commons, are `@Service`, `@Controller` and `@Repository`. 
+Stereotypes of `@Component`, among the most commons, are `@Service`, `@Controller`, `@Repository` and `@Configuration`. 
 > Those are just useful for us, human, to better understand the role of the class. But Spring cares only for `@Component`. Using `@Component` or one of its stereotypes for Spring does make any difference in the bean creation.
 
 ```java
@@ -207,11 +215,10 @@ public class MemberServiceWithFieldInjection {
 
 }
 ```
-
 > Please note that field annotation is a bad practice as the code is impossible to test without a mock framework. Avoid field injection as much as possible.
 
 ### Scopes for Spring beans? What is the default scope?
-The default Scope for a Spring Bean is **Singleton**, which means you have only one instance of the bean in the Application Context. As every bean are singleton, consider carefully your beans in terms of Immutability, Stateless or Synchronized it if your bean is stateful.
+The default Scope for a Spring Bean is **Singleton**, which means you have only one instance of the bean in the Application Context. As every bean are singleton, consider carefully your beans in terms of Immutability, Stateless or Synchronization it if your bean is stateful.
 
 The other scope available in Spring Core is **Prototype** for which you always get a new instance when requesting a Bean from the Application Context. 
 
@@ -222,7 +229,7 @@ public class ApplicationConfiguration {
 
     @Bean
     @Scope("prototype") // To change the scope from Singleton to Protoype
-    @Scope("singleton") // default behavior. Do not specify if you don't need to.
+    // @Scope("singleton") // default behavior. Do not specify if you don't need to.
     public MemberService prototypeMemberService() {
         return new MemberService();
     }
@@ -308,11 +315,11 @@ public static BeanFactoryPostProcessor propertyConfigurer() {
 * You could set the File encoding:
 ```java
 @Bean
-    public static BeanFactoryPostProcessor propertyConfigurer() {
-        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-        configurer.setFileEncoding("UTF-8");
-        return configurer;
-    }
+public static BeanFactoryPostProcessor propertyConfigurer() {
+    PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+    configurer.setFileEncoding("UTF-8");
+    return configurer;
+}
 ```
 * And even more ([check the java documentation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/support/PropertySourcesPlaceholderConfigurer.html))
 
@@ -422,6 +429,7 @@ public class ApplicationConfigurationWithParameterInjection {
         return new MemberRepository();
     }
 }
+
 public class MemberRepository implements InitializingBean {
     void cleanUpWithDestroyMethod() {
         // Perform some cleanup
@@ -431,28 +439,29 @@ public class MemberRepository implements InitializingBean {
  
 ### Consider how you enable JSR-250 annotations like @PostConstruct and @PreDestroy? When/how will they get called?
 
-Those annotations are part of the JSR-250, inside the javax.annotations package. To be executed by Spring, it declares a `CommonAnnotationBeanPostProcessor` bean (a `BeanPostProcessor`) whom special purposes is to declare and call the initializers. 
+Those annotations are part of the JSR-250, inside the `javax.annotations` package. To be executed by Spring, it declares a `CommonAnnotationBeanPostProcessor` bean (a `BeanPostProcessor`) whom special purposes is to declare and call the initializers. 
 
-Therefore, they are called between the `BeanPostProcessor.postProcessBeforeInitialization()` and `BeanPostProcessor.postProcessAfterInitialization()`.
+The initializers are called between the `BeanPostProcessor.postProcessBeforeInitialization()` and `BeanPostProcessor.postProcessAfterInitialization()`.
 
 ### How else can you define an initialization or destruction method for a Spring bean?
 In `@Bean` annotation, see previous points.
+
 ## What does component-scanning do?
-Component-scanning scans the packages specified in the annotation `@ComponentScan`. It enables Spring to analyse a subset of your application to find classes annotated by `@Component` or its stereotypes to create Beans.
+Component-scanning scans packages and sub-packages specified in the annotation `@ComponentScan`. It enables Spring to analyse a subset of your application to find classes annotated by `@Component` or its stereotypes to create Beans.
 
 ## What is the behavior of the annotation @Autowired with regards to field injection, constructor injection and method injection?
 
 `@Autowired` enables Spring to perform Dependency Injection at some places during the bean creation.
 * Constructor injection: Spring will lookup for constructors in your `@Component` class and will invoke:
     * The default constructor if none are present
-    * Or The provided constructor if there is only one
+    * Or the provided constructor if there is only one
     * Or in case of many constructors:
         * The one annotated by `@Autowired`
         * Or the default one if provided
         * Or an exception if Spring can't determine a suitable constructor.
+
 > Please note the `@Autowired` is optional for a Constructor injection.
 
-//Example of constructor injection, and when to use which constructors
 ```java
 @Service
 public class DefaultConstructorInjection {
@@ -507,7 +516,7 @@ public class ExceptionOnNonResolvedConstructorsInjection {
 }
 ```
 
-* Methods & fields injection: Spring will inject dependencies into fields and methods (in this order)) annotated by `@Autowired`. For more information, check previous points.
+* Methods & fields injection: Spring will inject dependencies into fields and methods (in this order) annotated by `@Autowired`. For more information, check previous points.
 
 ## How does the @Qualifier annotation complement the use of @Autowired?
 
@@ -541,10 +550,10 @@ See point above
 
 The power of a Proxy object is to enrich your application at runtime. It is very powerful to enable Transactional, Security, Caching or Logging behavior. 
 
-The disadvantage of using Proxy is the complexity you have to deal with when something goes wrong in your application and you need to figure out what. For instance, have you ever looked the stacktrace of an exception in your Spring Application? It is full of proxy, internal method invocation and even more. 
+The disadvantage of using Proxy is the complexity you have to deal with when something goes wrong in your application and you need to figure out what. For instance, have you ever looked the stacktrace of an exception in your Spring Application? It is full of proxy, internal method invocation and even more, harder to understand at first. 
 
 ## What does the @Bean annotation do?
-The annotation `@Bean` creates a Singleton Proxy around the method to ensure te Bean is a singleton.
+The annotation `@Bean` creates a Singleton Proxy around the method to ensure the Bean is a singleton.
 
 Instead of just calling the method that creates the bean, Spring caches the Spring once, and re-use it when needed.
 
@@ -575,7 +584,7 @@ public class ApplicationConfigurationWithParameterInjection {
 
 ## Why are you not allowed to annotate a final class with @Configuration
 
-A `@Configuration` class needs to be wrap in a Proxy in order to ensure the Singleton behavior. Given a Configuration class does not implement any interface, the GCLib Proxy will be used by Spring. And a CGLib **extends** the target class to add the baheviors. Hence, it must not be final because of Java inheritance rules.
+A `@Configuration` class needs to be wrap in a Proxy in order to ensure the Singleton behavior. Given a Configuration class does not implement any interface, the GCLib Proxy will be used by Spring. And CGLib **extends** the target class to add the behaviors. Hence, it must not be final because of Java inheritance rules.
 
 ### How do @Configuration annotated classes support singleton beans?
 
@@ -696,7 +705,7 @@ By calling `@Value("${}")`, you refer directly to the bean `Environment`, which 
 
 ## What is Spring Expression Language (SpEL for short)? 
 
-(From the Spring documentation):The Spring Expression Language (SpEL for short) is a powerful expression language that supports querying and manipulating an object graph at runtime. The language syntax is similar to Unified EL but offers additional features, most notably method invocation and basic string templating functionality.
+(From the Spring documentation): The Spring Expression Language (SpEL for short) is a powerful expression language that supports querying and manipulating an object graph at runtime. The language syntax is similar to Unified EL but offers additional features, most notably method invocation and basic string templating functionality.
 
 ## What is the Environment abstraction in Spring?
 
