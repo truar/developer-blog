@@ -73,12 +73,14 @@ export default {
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
     // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build'
+    '@nuxt/typescript-build',
+    '@/modules/generator'
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxt/content',
+    '@nuxtjs/sitemap',
     ['@nuxtjs/fontawesome', {
       component: 'fa',
       icons: {
@@ -88,7 +90,18 @@ export default {
     }]
   ],
 
+  sitemap: {
+    hostname: 'https://blog.truaro.dev',
+    gzip: true,
+    exclude: [],
+    routes: [],
+    defaults: {
+      changefreq: 'weekly',
+      priority: 1
+    }
+  },
+
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {},
+  build: {}
 
 }
