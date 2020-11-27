@@ -1,5 +1,5 @@
 ---
-title: Deploying your application in GCP - Part 1
+title: Deploying your Spring Boot application in Cloud Run
 description: In this first part, we focus on deploying a Spring application to Cloud Run easily.
 image: /articles/deploying-an-app-in-gcp-part1/main.jpg
 alt: The GCP logo
