@@ -243,4 +243,9 @@ article h1 {
   border-radius: 6px;
 }
 
+.nuxt-content img {
+  display:block;
+  margin:auto;
+}
+
 </style>

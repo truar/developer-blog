@@ -11,6 +11,9 @@ author:
   image: /thibault-ruaro.png
 ---
 
+#### Changes note
+* 11/28/2020: Add a missing `/api` context-path prefix for the backend application.
+
 # Introduction
 
 Nowadays, it is possible for anyone who wishes it to start an application using the latest Google Cloud Technologies to deploy an entire application. Modern web application requires most of the time splitting the front, what users see, and the back, what handles user requests.
@@ -134,7 +137,7 @@ Briefly, this class sends a 200 HTTP Response containing the body `Hello World` 
 * `@RestController` -> the class is returning only data to the clients. This annotation bypasses the view resolver of `Spring MVC`.
 * `@GetMapping` -> Listen a GET request on the endpoint `/`.
 
-## Configure the server port
+## Configure the server port and base path
 
 A recommendation of Cloud Run is to enable your application to listen the port provided by the PORT environment variable ([for more information, check this link](https://cloud.google.com/run/docs/configuring/containers)).
 
@@ -144,6 +147,11 @@ server.port=${PORT:8080}
 ```
 > If you want to set a property based on an environment variable with a default, use this: ${MY_ENV_VARIABLE:my default value}. Here, we get the PORT from the environment, or we fall back to 8080.
 
+When developing an API, a common practice is to prefix all URLs with `/api`. With Spring, add a new property in `application.properties`.
+```
+server.servlet.context-path=/api
+``` 
+
 ## Request the server to see if it works
 
 Make sure your controller can handle requests with a provided PORT by executing:
@@ -152,7 +160,7 @@ Make sure your controller can handle requests with a provided PORT by executing:
 PORT=8088 java -jar target/gcpcloudrunback-0.0.1-SNAPSHOT.jar
 ```
 
-Go check the URL `http://localhost:8088`, and you should see `Hello World` displayed.
+Go check the URL `http://localhost:8088/api`, and you should see `Hello World` displayed.
 
 ![Skeleton started - First step success](/articles/deploying-an-app-in-gcp-part1/skeleton-started.png)
 
@@ -202,7 +210,7 @@ Try building the image locally and then run it to make sure it works as expected
 docker build -t gcr.io/truaro-resources/gcp-cloudrun-back:latest .
 docker run -d -p 8080:8080 gcr.io/truaro-resources/gcp-cloudrun-back:latest
 > 6b7fd5ca6136af33589c100d6d45884c304cdaf2299b9f1416a33dc607db08e2
-curl http://localhost:8080/
+curl http://localhost:8080/api/
 > Hello World
 docker stop 6b7fd5ca6136af33589c100d6d45884c304cdaf2299b9f1416a33dc607db08e2
 ```
