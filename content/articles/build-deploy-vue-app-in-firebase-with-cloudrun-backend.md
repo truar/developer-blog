@@ -4,7 +4,7 @@ description: To continue with the series consisting in deploying a full applicat
 image: /articles/build-deploy-vue-app-in-firebase-with-cloudrun-backend/main.png
 alt: Vue and Firebase Logo
 readingTime: 30 minutes
-createdAt: 2020-12-01
+createdAt: 2020-12-06
 author:
   name: Thibault Ruaro
   bio: Thibault is a GCP Professional Architect, with a passion for great code. He likes reading about code best practices and staying up-to-date concerning the latest IT subject. He is also an official Spring Core Trainer, where he gives training at Zenika on a monthly basis.
@@ -289,7 +289,7 @@ Now, you can access your application on Firebase using the `Hosting URL` firebas
 # Summary
 
 🎉&nbsp; Congratulations !! If you made it, here what you accomplished:
-* Creating a Vue 3 application using the `vue-cli0`
+* Creating a Vue 3 application using the `vue-cli`
 * Fetching data from your server with a Proxy configuration to avoid CORS request
 * Configuring a Firebase project to use the great `Hosting` solution
 * Use the `firebase` CLI to deploy your first website on Firebase 
