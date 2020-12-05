@@ -16,7 +16,7 @@ author:
 
 # Introduction
 
-Nowadays, it is possible for anyone who wishes it to start an application using the latest Google Cloud Technologies to deploy an entire application. Modern web application requires most of the time splitting the front, what users see, and the back, what handles user requests.
+Nowadays, it is possible for anyone who wishes it to start an application using the latest Google Cloud Technologies to deploy an entire application. Modern web applications require most of the time splitting the front, what users see, and the back, what handles user requests.
 
 In this series of articles, we will see how to deploy step by step a complete application. We will progressively cover topics like:
 * Hosting docker container on Cloud Run. Very useful when you have a low budget and enterprise needs.
@@ -48,7 +48,7 @@ Even if you could use the Cloud Shell, I recommend you using the `gcloud` CLI on
 Check the CLI is installed on your machine, by running `gcloud version` in your shell.
 
 Then, execute the following command, to make sure you are pointing to the correct project
-```
+```shell script
 gcloud config set core/project ${PROJECT_ID}
 ```
 
@@ -142,13 +142,13 @@ Briefly, this class sends a 200 HTTP Response containing the body `Hello World` 
 A recommendation of Cloud Run is to enable your application to listen the port provided by the PORT environment variable ([for more information, check this link](https://cloud.google.com/run/docs/configuring/containers)).
 
 To do so with Spring, just a property to the `application.properties` file:
-```
+```properties
 server.port=${PORT:8080}
 ```
 > If you want to set a property based on an environment variable with a default, use this: ${MY_ENV_VARIABLE:my default value}. Here, we get the PORT from the environment, or we fall back to 8080.
 
 When developing an API, a common practice is to prefix all URLs with `/api`. With Spring, add a new property in `application.properties`.
-```
+```properties
 server.servlet.context-path=/api
 ``` 
 
@@ -319,7 +319,7 @@ gcloud services enable run.googleapis.com
 ```
 
 2. Create a **service account** for the Cloud Run service. This ensures the respect of the **Principle of least privilege**.
-```
+```shell script
 gcloud iam service-accounts create gcp-cloudrun-back \
     --description="Service account that executes the gcp-cloudrun-back application" \
     --display-name="GCP Cloudrun Back service account"
@@ -353,7 +353,7 @@ curl https://gcp-cloudrun-back-a75acdipmq-ew.a.run.app
 > Hello World
 
 Check your container logs ([Follow this](https://cloud.google.com/run/docs/logging)). Here are mine:
-```
+```shell script
 2020-11-16 21:14:01.573 CET . ____ _ __ _ _
 2020-11-16 21:14:01.573 CET /\\ / ___'_ __ _ _(_)_ __ __ _ \ \ \ \
 2020-11-16 21:14:01.573 CET( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \

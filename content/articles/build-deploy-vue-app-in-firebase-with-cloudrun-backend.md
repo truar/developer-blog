@@ -284,7 +284,7 @@ Hosting URL: https://truaro-resources.web.app
 
 Now, you can access your application on Firebase using the `Hosting URL` firebase gave you after the execution of the deployment command. The webpage displayed should be the same as the local test we did earlier: ![Firebase and Cloud Run integration success](/articles/build-deploy-vue-app-in-firebase-with-cloudrun-backend/vue-spring-local-success.png)
 
-> You might first see `Loading...` couple of seconds before seeing `Hello World. I am automatically deployed`. Don't worry, it only means your Cloud Run service is booting. Once Cloud Run is up, the communcation with the server is very fast and you won't even see `Loading...` anymore. 
+> You might first see `Loading...` couple of seconds before seeing `Hello World. I am automatically deployed`. Don't worry, it only means your Cloud Run service is booting. Once Cloud Run is up, the communication with the server is very fast and you won't even see `Loading...` anymore. 
 
 # Summary
 
