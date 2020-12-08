@@ -3,7 +3,7 @@ title: Deploying your Spring Boot application in Cloud Run
 description: In this first part, we focus on deploying a Spring application to Cloud Run easily.
 image: /articles/deploying-an-app-in-gcp-part1/main.jpg
 alt: The GCP logo
-readingTime: 30 minutes
+readingTime: 11 minutes
 createdAt: 2020-11-17
 author:
   name: Thibault Ruaro
@@ -348,7 +348,7 @@ gcloud run services add-iam-policy-binding gcp-cloudrun-back \
 
 5. Check if the service is responding (the first request could be a bit long because of the startup time).
 ```shell script
-curl https://gcp-cloudrun-back-a75acdipmq-ew.a.run.app
+curl https://gcp-cloudrun-back-a75acdipmq-ew.a.run.app/api/
 ```
 > Hello World
 

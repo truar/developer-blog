@@ -3,7 +3,7 @@ title: Continuous Deployment pipeline with Cloud Build on Cloud Run
 description: Part 2 of deploying an app in GCP. In this second part, we create a continuous deployment pipeline using Cloud Build and Cloud Source Repositories.
 image: /articles/deploying-an-app-in-gcp-part2/main.jpg
 alt: The GCP logo
-readingTime: 30 minutes
+readingTime: 10 minutes
 createdAt: 2020-11-22
 author:
   name: Thibault Ruaro
@@ -13,13 +13,14 @@ author:
 
 # Introduction
 
-Building a software is a long and difficult process that takes time and skills. In order to succeed in our tasks, we as software developers need to craft the software steps by steps. There is a lot of good development practices for writing code, in order to get feedback as soon as possible. But if we set the boundaries at the code itself, we will miss a lot. 
+
+Building software is a long and difficult process that takes time and skills. In order to succeed in our tasks, we as software developers need to craft the software steps by steps. There are a lot of good development practices for writing code, in order to get feedback as soon as possible. But if we set the boundaries at the code itself, we will miss a lot. 
 
 A great team understands the importance of giving users access to the software as soon as possible. Even if the software is not yet complete, allowing the users to play with the application gives you way better feedback than any other things you could do. In other words, the new functionalities need to be deployed as soon as they are done, to collect those precious feedback. 
 
-That is why building a **Continuous Deployment pipeline** as soon as possible will put your product on the best track to become a successful software. Once the pipeline set, you don't bother anymore with feature deployments. You give at ease access to the user almost instantaneously, and collect its feedbacks on a daily basis.
+That is why building a **Continuous Deployment pipeline** as soon as possible will put your product on the best track to become a successful software. Once the pipeline set, you don't bother anymore with feature deployments. You give at ease access to the user almost instantaneously, and collect its feedback on a daily basis.
 
-In my journey of Cloud Architect, I have decided to try some GCP features to create a CD pipeline. The ones we cover today are:
+In my journey as a Cloud Architect, I have decided to try some GCP features to create a CD pipeline. The ones we cover today are:
 * **Cloud Source Repositories**: Mirroring a Github repository, it keeps your code sync on the GCP platform.
 * **Cloud Build**: Create a Continuous Deployment pipeline and trigger builds when a change occurs in your repository.
 
@@ -64,10 +65,6 @@ steps:
            '-t', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest',
            '.']
 
-  - id: 'push-to-cloud-registry'
-    name: gcr.io/cloud-builders/docker
-    args: ['push', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA']
-
 images:
   - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest'
@@ -93,16 +90,6 @@ steps:
 > * `args`: The list of arguments passed to the `entrypoint` statement of the Dockerfile referenced in the `name` part.
 > * `$PROJECT_ID`: A substitution variable automatically replaced by Cloud Build when running your build.
 > * `$SHORT_SHA`: A substitution variable provided by a Cloud Build trigger. By default, the `SHORT_SHA` is not available as the build needs to be triggered. But we will see how to provide substitutions variables when testing our Cloud Build config without trigger.
-
-The second step is about pushing the Docker image to Container registry.
-```yaml
-  - id: 'push-to-cloud-registry'
-    name: gcr.io/cloud-builders/docker
-    args: ['push', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA']
-```
-> Even if Cloud Build provides a way to push images created during a successful build using the `images` statement, we still need to manually push the image used in the Cloud Run deployment (will come next) to Container Registry.
->
-> By default, the steps are executed sequentially. As we have to build the image before pushing it, we can't do any parallel run.
 
 The final statement pushes images to Container Registry.
 ```yaml
@@ -177,7 +164,7 @@ gcloud projects add-iam-policy-binding ${YOUR_PROJECT_ID} \
 
 Or, [if you follow this](https://cloud.google.com/cloud-build/docs/securing-builds/configure-access-for-cloud-build-service-account), you can also manually enable the Cloud Run Admin and Service Account User roles.
 
-### Adding a new step to deploy to Cloud Run
+### Adding new steps to deploy to Cloud Run
 
 To make the most of Cloud Build, let's update the `gcpcloudrunback/gcp-cloudrun-back.yaml` description file to use some **substitutions variables**:
 ```yaml
@@ -208,10 +195,14 @@ spec:
       latestRevision: true
 
 ```
-> From the previous article, we just replaces some value with placeholders. Please do not modify them in the file, we will Cloud Build and `envsubst`, a linux tool, to deploy the revision with correct values.
+> [From the previous article](https://dev.to/zenika/deploying-your-spring-boot-application-in-cloud-run-59i4), we just replaces some value with placeholders. Please do not modify them in the file, we will Cloud Build and `envsubst`, a linux tool, to deploy the revision with correct values.
 
-Now we can add a new step to the `cloudbuild.yaml` file that executes the Cloud Run deployment commands. Add this after the step `push-to-cloud-registry`.
+Now we can add new steps to the `cloudbuild.yaml` file that pushes early in the build the image and executes the Cloud Run deployment commands. Add those steps after the step `dockerize-project`.
 ```yaml
+- id: 'push-to-cloud-registry'
+  name: gcr.io/cloud-builders/docker
+  args: ['push', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA']
+
 - id: 'deploy-cloud-run'
   name: gcr.io/cloud-builders/gcloud
   dir: gcpcloudrunback
@@ -231,6 +222,7 @@ Now we can add a new step to the `cloudbuild.yaml` file that executes the Cloud 
         --platform=managed --region=europe-west1 \
         --member="allUsers" --role="roles/run.invoker"
 ```
+> * `push-to-cloud-registry` pushes the image early in the build. Cloud Run needs the image to be accessible in Container Registry to work. If we rely only on the `images` at the end of the pipeline, Cloud Run will not be able to push the image because the image will not be pushed in Container Registry yet.
 > * `envsubst` is a tool replacing `${ENV_VAR}` statements with the actual value from your environment in the target file. Very handy ! 
 > * `${_SCALING_INSTANCE_COUNT}` is a substitution variable we will define in a Cloud Build Trigger.
 > * As you can see, we reused the `gcloud beta run` commands we executed in [the previous article](/deploying-an-app-in-gcp-part1).<br/>
@@ -327,8 +319,8 @@ gcloud run revisions list \
 ✔  gcp-cloudrun-back-qfv4q          gcp-cloudrun-back  2020-11-16 20:09:37 UTC  thibault.ruaro@zenika.com
 ```
 
-Final check, request the service:
-```
+Final check, request the service (change this link with the one corresponding to the your Cloud Run service):
+```shell script
 curl https://gcp-cloudrun-back-a75acdipmq-ew.a.run.app/
 ```
 > Hello World. I am automatically deployed
@@ -353,7 +345,7 @@ I have to admit, I had some fun doing this. But it is not always easy to use, as
 
 You might have realized that Cloud Build does not keep your Docker image in a cache. Which means for each build, you end up downloading your maven repositories. To go further, you could:
 * Extract the project compilation from the multi-stage Dockerfile and build your projects in a Cloud Build step. This way, you could download and upload cached maven dependencies easily in a Cloud Storage bucket, and reduce your build time. (I won't even mention storage fees, as your might be string no more than 1Gb...).
-* Use what is call **Kaniko cache**, where every step of your Dockerfile is cached. This also reduce your build time, but incurs in higher storage fees, as Kaniko stores every Dockerfile steps in a Cloud Storage Bucket.
+* Use what is called [**Kaniko cache**](https://cloud.google.com/cloud-build/docs/kaniko-cache), where every step of your Dockerfile is cached. This also reduce your build time, but incurs in higher storage fees, as Kaniko stores every Dockerfile steps in a Cloud Storage Bucket.
 * [Check this link for a full list of possible optimizations](https://cloud.google.com/cloud-build/docs/speeding-up-builds)
 
 I will try to provide short articles for those optimizations later.

@@ -125,7 +125,7 @@ Just add those 3 steps between the step `deploy-cloud-run` and the `images` part
     args: ['install', '--silent']
 
   - id: 'build-front'
-    waitFor: [ '-' ]
+    waitFor: [ 'install-yarn' ]
     name: node
     entrypoint: yarn
     dir: gcpfirebasefront
@@ -249,7 +249,7 @@ images:
 
 ### Change the Vue application to see a change
 
-Just change the `gcpfirebasefront/src/app.vue` file. Update the `<h1>` to see the Frontend has been deployed:
+Just change the `gcpfirebasefront/src/HelloWorld.vue` file. Update the `<h1>` to see the Frontend has been deployed:
 ```vue
 <template>
   <div class="hello">

@@ -151,7 +151,7 @@ Now, let's try if our application is properly communicating with our backend app
 ```shell script
 # terminal 1
 cd gcpcloudrunback
-./mvnw sping-boot:run
+./mvnw spring-boot:run
 ``` 
 
 ```shell script
