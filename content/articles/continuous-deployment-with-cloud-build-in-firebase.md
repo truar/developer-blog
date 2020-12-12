@@ -245,7 +245,6 @@ steps:
 images:
   - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest'
-
 ```
 
 ### Change the Vue application to see a change
