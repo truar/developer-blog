@@ -13,7 +13,6 @@ author:
 
 # Introduction
 
-
 Building software is a long and difficult process that takes time and skills. In order to succeed in our tasks, we as software developers need to craft the software steps by steps. There are a lot of good development practices for writing code, in order to get feedback as soon as possible. But if we set the boundaries at the code itself, we will miss a lot. 
 
 A great team understands the importance of giving users access to the software as soon as possible. Even if the software is not yet complete, allowing the users to play with the application gives you way better feedback than any other things you could do. In other words, the new functionalities need to be deployed as soon as they are done, to collect those precious feedback. 

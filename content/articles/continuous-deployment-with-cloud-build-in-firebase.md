@@ -1,9 +1,9 @@
 ---
-title: Creating a Continuous Deployment pipeline to deploy a Vue application in Firebase using Cloub Build
+title: Creating a Continuous Deployment pipeline to deploy a Vue application in Firebase using Cloud Build
 description: To continue with the series consisting in deploying a full application in GCP, we will focus on deploying a Vue application in Firebase using Cloud Build to create the Continuous Deployment pipeline
 image: /articles/continuous-deployment-with-cloud-build-in-firebase/main.png
 alt: Vue and Firebase Logo
-readingTime: 20 minutes
+readingTime: 7 minutes
 createdAt: 2020-12-09
 author:
   name: Thibault Ruaro
@@ -27,7 +27,7 @@ I won't cover all the subjects like I did in [Continuous Deployment pipeline wit
 
 ## Create a Firebase deployment image
 
-To deploy using Firebase, you need to create an image containing the Firebase CLI, making it easy to deploy your application. Here is the official link to create a [Firebase image to deploy your application](https://cloud.google.com/cloud-build/docs/deploying-builds/deploy-firebase). At the tieme of the article, here are the commands:
+To deploy using Firebase, you need to create an image containing the Firebase CLI, making it easy to deploy your application. Here is the official link to create a [Firebase image to deploy your application](https://cloud.google.com/cloud-build/docs/deploying-builds/deploy-firebase). At the time of the article, here are the commands:
 ```shell script
 git clone https://github.com/GoogleCloudPlatform/cloud-builders-community.git
 cd cloud-builders-community/firebase
@@ -35,11 +35,11 @@ gcloud builds submit .
 cd ../..
 rm -rf cloud-builders-community/
 ```
-> If those steps does not work for you, check the [official link](https://cloud.google.com/cloud-build/docs/deploying-builds/deploy-firebase) to make sure it didn't change since the article was written (which is very likely)
+> If those steps do not work for you, check the [official link](https://cloud.google.com/cloud-build/docs/deploying-builds/deploy-firebase) to make sure it didn't change since the article was written (which is very likely)
 
 Those steps create and push a Firebase ready image on your Container Registry which can be used in a Cloud Build pipeline.
 
-To make sure the iamge is in your container, try executing this commmand:
+To make sure the image is in your container, try executing this command:
 ```shell script
 gcloud container images list --filter="name:firebase"       
 
@@ -150,10 +150,10 @@ As always, let's review the important part.
   dir: gcpfirebasefront
   args: ['install', '--silent']
 ```
-> * `waitFor: [ '-' ]`: Run in parallel this step with the others. Indeed, we don't need to wait for the backend to be deployed in order to deploy the front. It is a performance improvements.
+> * `waitFor: [ '-' ]`: Run in parallel this step with the others. Indeed, we don't need to wait for the backend to be deployed in order to deploy the front. It is a performance improvements of your CD pipeline.
 > * `name: node`: We use the official `node` image from the Docker hub registry.
-> * `entrypoint: yarn`: `yarn` is the package mamanger we use to build the application.
-> * `dir: gcpfirebasefront`: We change directory to go in the `gcpfirebasefront`.
+> * `entrypoint: yarn`: `yarn` is the package manager we use to build the application.
+> * `dir: gcpfirebasefront`: We change the directory to go in the `gcpfirebasefront`.
 > * `args: [ 'install', '--silent' ]`: Just run the `yarn install --silent` command, to package our application for production. Not mandatory, but I find `yarn install` to be quite verbose.
 
 #### Build the Vue application
@@ -168,7 +168,7 @@ As always, let's review the important part.
 > * `waitFor: [ 'install-yarn' ]`: `yarn install` needs to be done before moving further
 > * `args: [ 'build' ]`: Just run the `yarn build` command, to package our application for production
 
-As you can see, we do not create any Docker image. We simply build the application using `yarn build`. The `dist` folder is located under `/workspace`, the shared volumes of Cloud Build. The next steps will be able to deploy on Firebase what has been built on a previous step.
+As you can see, we do not create any Docker image. We simply build the application using `yarn build`. The `dist` folder is located under `/workspace`, the shared volumes of Cloud Build. The next step will be able to deploy on Firebase what has been built at this step.
 
 #### Deploy on Firebase
 ```yaml
@@ -178,12 +178,13 @@ As you can see, we do not create any Docker image. We simply build the applicati
   args: [ 'deploy', '--project=$PROJECT_ID', '--only', 'hosting' ]
   dir: gcpfirebasefront
 ```
-> * `waitFor: [ 'build-front' ]`: Just wait for the previous steps, not the backend steps.
+> * `waitFor: [ 'build-front' ]`: Just wait for the previous step, not the backend steps.
 > * `name: gcr.io/$PROJECT_ID/firebase`: Step based on the image we created earlier to use the Firebase CLI
 > * `args: [ 'deploy', '--project=$PROJECT_ID', '--only', 'hosting' ]`: The args to be passed to `firebase` command
 > * `$PROJECT_ID`: As always, a substitution variable provided by Cloud Build
 
-This step simply executes the command `firebase deploy --project=${PROJECT_ID} --only hosting`
+This step simply executes the command `firebase deploy --project=${PROJECT_ID} --only hosting`. If you remember well, it was the same command we used in [the previous article](/build-deploy-vue-app-in-firebase-with-cloudrun-backend) from our local mahcine. 
+> Once again, do not go too fast, start slow with easy steps. You can only create a Continuous Deployment pipeline if you have something to automate...
 
 ### Review the Cloud Build deployment file
 
@@ -256,25 +257,24 @@ Just change the `gcpfirebasefront/src/HelloWorld.vue` file. Update the `<h1>` to
     <h1>From firebase: {{ msg }}</h1>
 ```
 
-As we already have the Cloud Build triggers created in the previous articles, simply push your application and everything will be automatically deployed.
+As we already have the Cloud Build triggers created in [a previous article](/continuous-deployment-with-cloud-build), simply push your application and everything will be automatically deployed.
 
-To follow up the build execution, go on the console, you will have the logs. Or just use this command to see if the deployment is still ongoing:
+To follow up the build execution, go on the GCP console, you will have the logs. Or just use this command to see if the deployment is still ongoing:
 ```shell script
 gcloud builds list --ongoing
 46e2992d-24f4-4df5-8190-a6c132a4827b  2020-12-05T12:37:43+00:00            github_truar_try-gcp-deploy@80c5b6d1eb9bc5425e2abec092535ff2a30ee5b6  -       WORKING
-
 ```
-Once the build terminated (i.e the command output is empty), just access your firebase web application page. Here is the result: ![Result from automatic deployment in Firebase](/articles/continuous-deployment-with-cloud-build-in-firebase/automatic-deployment-firebase-result.png)
 
+Once the build terminated (i.e the command output is empty), just access your firebase web application page. Here is my result: ![Result from automatic deployment in Firebase](/articles/continuous-deployment-with-cloud-build-in-firebase/automatic-deployment-firebase-result.png)
 
 # Summary
 
 In this article, we covered:
 * Creating a Firebase image to use the `firebase` CLI in a Cloud Build step
 * Configuring the Cloud Build service account to deploy applications on Firebase
-* Configuring Cloud Build steps to build and deploy a static frontend application
+* Configuring Cloud Build steps to build and deploy a static frontend application on Firebase
 
-With all the previous articles, we are starting to have nice view on the tools and services we can lever to easily deploy an application on the Cloud. You might have noticed that you haven't lots of fees for this application, even if it is accessible 24/7 anywhere on earth.
+With all the previous articles, we are starting to have nice view of the tools and services we can lever to easily deploy an application on the Cloud. You might have noticed that you haven't lots of fees for this application, even if it is accessible 24/7 anywhere on earth. This is one of the main advantages of GCP platform, you can build international applications for a very attractive price.
 
 ## What's next
 
