@@ -31,7 +31,7 @@ Please note that the bullet points from the following articles are taken from th
 Please find below the main Spring Core topics, split in different articles for readability's sake:
 * [Container, Dependency and IOC](/container-dependency-and-ioc)
 * [Aspect-Oriented Programming (AOP)](/aspect-oriented-programming-aop)
-* Data Management: JDBC, Transactions (coming soon)
+* [Data Management: JDBC, Transactions](/spring-data-management-jdbc-transactions)
 * Spring Data JPA (coming soon)
 * Spring MVC and The Web Layer (coming soon)
 * REST (coming soon)
