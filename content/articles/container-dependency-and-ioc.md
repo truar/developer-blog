@@ -735,6 +735,6 @@ public class MemberServiceWithSpelBeanReference {
 ## What is the difference between $ and # in @Value expressions?
 
 The difference between $ and # is:
-* `@Value("${myProperty}")` referenced a property named `myProperty` stored in the bean `Environment`
-* `@Value("#{myProperty}")` referenced a bean named `myProperty` stored in the ApplicationContext
+* `@Value("${myProperty}")` references a property named `myProperty` stored in the bean `Environment`
+* `@Value("#{myProperty}")` references a bean named `myProperty` stored in the ApplicationContext
 
