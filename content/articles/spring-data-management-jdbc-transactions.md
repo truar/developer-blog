@@ -4,7 +4,7 @@ description: Preparing the Spring Professional 5.0 Certification by answering ev
 image: /articles/spring-core-study-guide/main.png
 alt: The Spring framework logo
 readingTime: 10 minutes
-createdAt: 2020-12-28
+createdAt: 2020-12-12
 author:
   name: Thibault Ruaro
   bio: Thibault is a GCP Professional Architect, with a passion for great code. He likes reading about code best practices and staying up-to-date concerning the latest IT subject. He is also an official Spring Core Trainer, where he gives training at Zenika on a monthly basis.
