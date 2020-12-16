@@ -1,6 +1,6 @@
 ---
-title: Build a Vue application communicating with a CloudRun backend and deploy to Firebase 
-description: To continue with the series consisting in deploying a full application in GCP, we will focus on building and deploying the frontend using Firebase.
+title: Build a Vue app with Firebase and Cloud Run
+description: To continue with the series consisting in deploying a full application in GCP, we will focus on building and deploying the frontend with Vue, using Firebase and Cloud Run.
 image: /articles/build-deploy-vue-app-in-firebase-with-cloudrun-backend/main.png
 alt: Vue and Firebase Logo
 readingTime: 9 minutes
@@ -13,25 +13,26 @@ author:
 
 # Introduction
 
-Building a rich and powerful web application has never been so easy and so complicated at the same time. The web expanded really fast, and with it, the need to build more and more advanced applications. Empowered by some great frameworks wishing to simplify your life as a Frontend developer, you can easily start following some tutorials and documentation, and in the meantime, being totally lost in the wide eco-system you can now face. The time when we manipulated the DOM ourselves is now gone, and we must embrace advanced architectural style whom purpose is to ease the application maintenance and evolution.
+Building a rich and powerful web application has never been so easy and so complicated at the same time. The web expanded really fast, and with it, the need to build more and more advanced applications. Empowered by some great frameworks wishing to simplify your life as a Frontend developer, you can easily start following some tutorials and documentation, and in the meantime, being totally lost in the wide eco-system you can now face. The time when we manipulated the DOM ourselves is now gone, and we must embrace advanced architectural style whose purpose is to ease the application maintenance and evolution.
 
-Those famous Web framework, you might know them already, even only by name. There are two main ones:
+Those famous Web frameworks, you might know them already, even only by name. There are three main ones:
 * Angular, supported by Google developers team
 * React supported by Facebook developers team
+* Vue, supported by a community of developers sharing passion for frontend development
 
-A third one, which is having hard time getting adopted by companies is Vue. This framework is supported by many developers who shared a passion for Frontend development. This framework is the one I enjoy the most when developing application. Which is why, I'll be using Vue to build the web application in this article.
+Despite the fact Vue was not maintained by one of the [GAFAM](/https://en.wikipedia.org/wiki/Big_Tech), it is nowadays a great framework used widely, even [by the GAFAM themselves](https://www.netguru.com/blog/13-top-companies-that-have-trusted-vue.js-examples-of-applications). Besides, as Vue is the framework I enjoyed the most, it is the one I chose in this article to build the frontend part of the application.
 
-Developing an application is now accessible quickly to the most, but deploying this application and making it accessible is quite another challenge. Not everyone is comfortable with server administration and deployment task. Hopefully, Google comes with an answer: Firebase. Quoting Google:
-> Firebase is a platform developed by Google for creating mobile and web applications. It was originally an independent company founded in 2011. In 2014, Google acquired the platform and it is now their flagship offering for app development.
+Developing an application is now accessible quickly to the most, but deploying this application and making it accessible is quite another challenge. Not everyone is comfortable with server administration and deployment tasks. Hopefully, Google comes with an answer: Firebase. 
+> Firebase is a platform developed by Google for creating mobile and web applications. It was originally an independent company founded in 2011. In 2014, Google acquired the platform and it is now their flagship offering for app development. -- Google
 
-In other words, Firebase makes it easier for you to host your application by offering complete server management. Your app is easily scalable, which means it can support load peaks, and accessible worldwide, for almost a penny. Under the hood, Firebase uses Google Cloud Platform technology to host your application. This makes easy for instance to have a Vue application accessible 100% of the time for free (almost but clearly, you won't pay much) communicating with backend application hosted on GCP, like Cloud Functions or Cloud Run.
+In other words, Firebase makes it easier for you to host your application by offering complete server management. Your app is easily scalable, which means it can support load peaks, and accessible worldwide, for almost a penny. Under the hood, Firebase uses Google Cloud Platform technology to host your application. This makes easy to have a Vue application accessible 100% of the time for free (almost but clearly, you won't pay much) communicating with another backend application hosted on GCP, like Cloud Functions or Cloud Run.
 
 In this article, we will focus on developing a Vue application communicating with the Spring Boot application hosted on Cloud Run [we developed in the previous article](/deploying-an-app-in-gcp-part1). We will host it using Firebase and deploy it by improving the Cloud Build pipeline [we covered in the second article](/continuous-deployment-with-cloud-build).
 
 ## Prerequisites
 
-* **Node.js**:an open-source javascript runtime environment. You need it in order to run javascript code outside of a browser. To install Node, [follow this link](https://nodejs.org/en/download/package-manager/)
-* **Yarn or NPM**: a package manager to download the different libs you need to build your application. If you come from the Java world, you might know Maven or Gradle. Those are famous package manager for java application. Yarn is now recommended over npm by the way, if you don't know which one to use, use Yarn. To install Yarn, [click here](https://classic.yarnpkg.com/en/docs/install/)
+* **Node.js**: an open-source javascript runtime environment. You need it in order to run javascript code outside of a browser. To install Node, [follow this link](https://nodejs.org/en/download/package-manager/)
+* **Yarn or NPM**: a package manager to download the different libs you need to build your application. If you come from the Java world, you might know Maven or Gradle. Those are famous package manager for java application. For frontend development, I will use Yarn. To install Yarn, [click here](https://classic.yarnpkg.com/en/docs/install/)
 
 # Building the VusJS application
 
@@ -51,10 +52,10 @@ In this article, we will create the `gcpfirebasefront` folder. Don't do it manua
 First, [follow the official documentation](https://cli.vuejs.org/guide/installation.html) to install or upgrade the vue-cli. If you already have, I recommend upgrading to the latest version (4.5.9 at the time of the article creation), as you can use Vue 3.
 
 Considering your are located in the `gcpapplication` folder, run
-```shell script
+```shell
 vue create gcpfirebasefront --preset __default_vue_3__
 ```
-> * It might take couple of minutes, just be patient.
+> * It might take a couple of minutes, just be patient.
 > * The preset Vue 3 is very minimal using babel and eslint. It will be more than enough for our application.
 
 For the rest of this part, we will only be located inside the folder `gcpfirebasefront`.
@@ -149,19 +150,19 @@ export default {
 Just like a cook tasting every part of his meals to make sure it is delicious and has the expected taste, you must taste (😅) &nbsp; your application at each step. We could have done one to test the creation using `vue-cli` but for the article length sake, I decided not to.
 
 Now, let's try if our frontend is properly communicating with our backend. Open 2 terminals, and from the folder `gcpapplication`, run:
-```shell script
+```shell
 # terminal 1
 cd gcpcloudrunback
 ./mvnw spring-boot:run
 ``` 
 
-```shell script
+```shell
 # terminal 2
 cd gcpfirebasefront
 yarn serve
 # or npm run serve depending on what is installed on your application
 ```
-Open your browser and navigate to `localhost:8088`. You should see something like this: ![Local integration between Vue and Spring success](/articles/build-deploy-vue-app-in-firebase-with-cloudrun-backend/vue-spring-local-success.png)
+Open your browser and navigate to `localhost:8088`. You should see something like this: ![Local integration between Vue and Spring success](https://dev-to-uploads.s3.amazonaws.com/i/hqcdsgmeir2umqzxq7g1.png)
 
 > If you see something different than `Hello World. I am deployed automatically`, that means you may have missed a step. Read back, and come back again when it is working. Otherwise, you'll miss the best part: deploying in Firebase.
 
@@ -178,14 +179,14 @@ The first thing is to add your GCP project to Firebase (created in [the first ar
 2. Select the one you created previously.
 3. Accept or not using Google analytics. For this project, we don't need it. It is up to you.
 4. Accept the terms and conditions
-5. Let firebase preparing your project.
+5. Let firebase prepare your project.
 
 ### Prepare your environment
 
-Once the project set, install the Firebase CLI locally to execute some commands. To do so, [follow the official documentation](https://firebase.google.com/docs/cli).
+Once the project is set, install the Firebase CLI locally to execute some commands. To do so, [follow the official documentation](https://firebase.google.com/docs/cli).
 
 After the installation, run this to make sure it works:
-```shell script
+```shell
 firebase --version
 8.16.2
 ```
@@ -218,9 +219,9 @@ Create a file called `firebase.json` in `gcpfirebasefront` with the following co
 > Quick explanation:
 > * `public`: the folder in which are located the production files built by `yarn build`
 > * `ignore`: ignores folders/files to be uploaded onto Firebase. As you only pay for the storage, make sure you don't upload unused files.
-> * `rewrites`: A rewrite rules mandatory in the case of Single Page Application, to make sure all URLs uses `index.html` file.
+> * `rewrites`: A rewrite rules mandatory in the case of Single Page Application, to make sure all URLs use the `index.html` file.
 
-These file should be the result if you ran the command `firebase init`. Besides, the `firebase init` command generates a file `.firebaserc`, but we won't need it.
+These files should be the result if you ran the command `firebase init`. Besides, the `firebase init` command generates a file `.firebaserc`, but we won't need it.
 
 ## Connect your Firebase site to Cloud Run
 
@@ -237,7 +238,7 @@ Since recently, Firebase has a convenient way to redirect some HTTP requests to 
 > * `source`: Redirect HTTP request `api` to the Cloud Run service
 > * `run`: The Cloud Run service name `serviceId` and the `region`. Remember [from the first article](/deploying-an-app-in-gcp-part1), we deployed a Cloud Run service called `gcp-cloudrun-back` in the region `europe-west1`.
 > 
-> This configuration is really great to avoid `CORS` configuration, where most of the times, this can lead to security issues if not thought carefully. So if possible, let's avoid those problems.
+> This configuration is really great to avoid `CORS` configuration, where most of the time, this can lead to security issues if not thought carefully. So if possible, let's avoid those problems.
 
 Here is the final form of the `firebase.json` file:
 ```json
@@ -270,7 +271,7 @@ Here is the final form of the `firebase.json` file:
 ## Deploy the application on Firebase
 
 Now, let's use the `firebase` CLI to deploy our application:
-```shell script
+```shell
 yarn build
 firebase deploy --project=${PROJECT_ID} --only hosting
 
@@ -283,9 +284,9 @@ Hosting URL: https://truaro-resources.web.app
 > * Replace `${PROJECT_ID}` with your Firebase Project Id. 
 > * `HOSTING_URL` is your application URL.
 
-Now, you can access your application on Firebase using the `Hosting URL` firebase gave you after the execution of the deployment command. The webpage displayed should be the same as the local test we did earlier: ![Firebase and Cloud Run integration success](/articles/build-deploy-vue-app-in-firebase-with-cloudrun-backend/vue-spring-local-success.png)
+Now, you can access your application on Firebase using the `Hosting URL` firebase gave you after the execution of the deployment command. The webpage displayed should be the same as the local test we did earlier: ![Firebase and Cloud Run integration success](https://dev-to-uploads.s3.amazonaws.com/i/hqcdsgmeir2umqzxq7g1.png)
 
-> You might first see `Loading...` couple of seconds before seeing `Hello World. I am automatically deployed`. Don't worry, it only means your Cloud Run service is booting. Once Cloud Run is up, the communication with the server is very fast and you won't even see `Loading...` anymore. 
+> You might first see `Loading...` a couple of seconds before seeing `Hello World. I am automatically deployed`. Don't worry, it only means your Cloud Run service is booting. Once Cloud Run is up, the communication with the server is very fast and you won't even see `Loading...` anymore. 
 
 # Summary
 
