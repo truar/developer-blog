@@ -19,13 +19,19 @@ A Spring Data Repository interface is a basic contract defining methods to data 
 * `Repository`: Default interface with no method included. You need to fully extends the contract.
 * `CrudRepository`: Interface with basic CRUD methods, like `save`, `findById`, `findAll`, `deleteAll`...
 * `PagingAndSortingRepository`: Interface providing advanced methods to have pagination and sorting behavior when finding data.
-> All this interface are generics and requires the extending interface to provide the actual object type and id type
+> All those interfaces are generics and require the extending interface to provide the actual object type and id type
+```java
+public interface Repository<T, ID> {
+}
 
-You can extend Spring Interface with your own in order to add specific method to fetch your data against the repository.
+public interface MemberRepository extends Repository<Member, Long> {
+}
+```
+You have to extend Spring Interface with your own in order to add specific method to fetch your data against the repository.
 
 ## How do you define a Spring Data Repository interface? Why is it an interface not a class? 
 
-To define a Spring Data Repository, simply extends a Spring provided Data interface. It is an interface because Spring will implement the interface at runtime using a Proxy.
+To define a Spring Data Repository, simply extends a Spring provided Data interface. It is an interface because Spring will implement the interface at runtime **using a JDK Proxy**.
 
 ```java
 public interface MemberRepository extends CrudRepository<Member, Long> {
@@ -56,7 +62,21 @@ The naming convention for finder method is:
 For complete information, [see this documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.named-queries)
 
 ## How are Spring Data repositories implemented by Spring at runtime?
-(See above)
+
+Spring implements the Spring Data repositories at runtime using a **JDK Proxy**. The Proxy bean is in the Application Context, like any other beans, and gets injected into the services class that requires it.
+
 ## What is @Query used for?
 
-`@Query` is used to empla
+`@Query` is used to create a custom JPQL (Java Persistence Query Language) to let you define a specific query that a finder methods could not provide.
+
+```java
+public interface MemberRepository extends CrudRepository<Member, Long> {
+
+    @Query("select m from Member m where m.email = ''")
+    Member findEmptyEmail();
+}
+```
+You could also provide a native SQL query by setting the attribute `native` to `true` on the `@Query` annotation:
+```java
+@Query(value = "select * from member", nativeQuery = true)
+```
