@@ -20,7 +20,7 @@ Those famous Web frameworks, you might know them already, even only by name. The
 * React supported by Facebook developers team
 * Vue, supported by a community of developers sharing passion for frontend development
 
-Despite the fact Vue was not maintained by one of the [GAFAM](/https://en.wikipedia.org/wiki/Big_Tech), it is nowadays a great framework used widely, even [by the GAFAM themselves](https://www.netguru.com/blog/13-top-companies-that-have-trusted-vue.js-examples-of-applications). Besides, as Vue is the framework I enjoyed the most, it is the one I chose in this article to build the frontend part of the application.
+Despite the fact Vue was not maintained by one of the [GAFAM](https://en.wikipedia.org/wiki/Big_Tech), it is nowadays a great framework used widely, even [by the GAFAM themselves](https://www.netguru.com/blog/13-top-companies-that-have-trusted-vue.js-examples-of-applications). Besides, as Vue is the framework I enjoyed the most, it is the one I chose in this article to build the frontend part of the application.
 
 Developing an application is now accessible quickly to the most, but deploying this application and making it accessible is quite another challenge. Not everyone is comfortable with server administration and deployment tasks. Hopefully, Google comes with an answer: Firebase. 
 > Firebase is a platform developed by Google for creating mobile and web applications. It was originally an independent company founded in 2011. In 2014, Google acquired the platform and it is now their flagship offering for app development. -- Google
