@@ -1,5 +1,5 @@
 ---
-title: Creating a Continuous Deployment pipeline to deploy a Vue application in Firebase using Cloud Build
+title: Continuous Deployment on Firebase using Cloud Build
 description: To continue with the series consisting in deploying a full application in GCP, we will focus on deploying a Vue application in Firebase using Cloud Build to create the Continuous Deployment pipeline
 image: /articles/continuous-deployment-with-cloud-build-in-firebase/main.png
 alt: Vue and Firebase Logo
@@ -13,11 +13,11 @@ author:
 
 # Introduction
 
-We just created a simple Vue application deployed in Firebase in the [previous article](/build-deploy-vue-app-in-firebase-with-cloudrun-backend). Like I mentioned many times in this blog, regular feedback are key to build a successful application. 
+We just created a simple Vue application deployed in Firebase in the [previous article](/build-deploy-vue-app-in-firebase-with-cloudrun-backend). Like I mentioned many times in this blog, regular feedback is key to build a successful application.
 
-Let's enhance the Continuous Deployment pipeline we created in [Continuous Deployment pipeline with Cloud Build on Cloud Run](/continuous-deployment-with-cloud-build) to add automatic deployment of the frontend part of our application. 
+Let's enhance the Continuous Deployment pipeline we created in [Continuous Deployment pipeline with Cloud Build on Cloud Run](/continuous-deployment-with-cloud-build) to add automatic deployment of the frontend part of our application.
 
-To remind you, we previously created a nice Vue application communicating with a Cloud Run backend application. The application was deployed on Firebase to have an international audience with no effort. Le's automate this deployment.
+To remind you, we previously created a nice Vue application communicating with a Cloud Run backend application. The application was deployed on Firebase to have an international audience with no effort. Let's automate this deployment.
 
 Here is the [Github project](https://github.com/truar/blog-resources) you can clone to follow the article.
 
@@ -35,13 +35,13 @@ gcloud builds submit .
 cd ../..
 rm -rf cloud-builders-community/
 ```
-> If those steps do not work for you, check the [official link](https://cloud.google.com/cloud-build/docs/deploying-builds/deploy-firebase) to make sure it didn't change since the article was written (which is very likely)
+> If these steps do not work for you, check the [official link](https://cloud.google.com/cloud-build/docs/deploying-builds/deploy-firebase) to make sure it didn't change since the article was written (which is very likely)
 
-Those steps create and push a Firebase ready image on your Container Registry which can be used in a Cloud Build pipeline.
+The steps above create and push a Firebase ready image on your Container Registry which can be used in a Cloud Build pipeline.
 
 To make sure the image is in your container, try executing this command:
 ```shell script
-gcloud container images list --filter="name:firebase"       
+gcloud container images list --filter="name:firebase"      
 
 NAME
 gcr.io/truaro-resources/firebase
@@ -60,40 +60,40 @@ Now you have a Firebase image, let's add new steps to deploy our Vue application
 The content of `cloudbuild.yaml` after the first pipeline is:
 ```yaml
 steps:
-  - id: 'dockerize-project'
-    name: gcr.io/cloud-builders/docker
-    dir: gcpcloudrunback
-    args: ['build',
-           '-t', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA',
-           '-t', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest',
-           '.']
+ - id: 'dockerize-project'
+   name: gcr.io/cloud-builders/docker
+   dir: gcpcloudrunback
+   args: ['build',
+          '-t', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA',
+          '-t', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest',
+          '.']
 
-  - id: 'push-to-cloud-registry'
-    name: gcr.io/cloud-builders/docker
-    args: ['push', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA']
+ - id: 'push-to-cloud-registry'
+   name: gcr.io/cloud-builders/docker
+   args: ['push', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA']
 
-  - id: 'deploy-cloud-run'
-    name: gcr.io/cloud-builders/gcloud
-    dir: gcpcloudrunback
-    entrypoint: bash
-    args:
-      - '-c'
-      - |
-        apt-get update
-        apt-get install -qq -y gettext
-        export PROJECT_ID=$PROJECT_ID
-        export IMAGE_VERSION=$SHORT_SHA
-        export SCALING_INSTANCE_COUNT=${_SCALING_INSTANCE_COUNT}
-        envsubst < gcp-cloudrun-back.yaml > gcp-cloudrun-back_with_env.yaml
-        gcloud beta run services replace gcp-cloudrun-back_with_env.yaml \
-          --platform=managed --region=europe-west1
-        gcloud run services add-iam-policy-binding gcp-cloudrun-back \
-          --platform=managed --region=europe-west1 \
-          --member="allUsers" --role="roles/run.invoker"
+ - id: 'deploy-cloud-run'
+   name: gcr.io/cloud-builders/gcloud
+   dir: gcpcloudrunback
+   entrypoint: bash
+   args:
+     - '-c'
+     - |
+       apt-get update
+       apt-get install -qq -y gettext
+       export PROJECT_ID=$PROJECT_ID
+       export IMAGE_VERSION=$SHORT_SHA
+       export SCALING_INSTANCE_COUNT=${_SCALING_INSTANCE_COUNT}
+       envsubst < gcp-cloudrun-back.yaml > gcp-cloudrun-back_with_env.yaml
+       gcloud beta run services replace gcp-cloudrun-back_with_env.yaml \
+         --platform=managed --region=europe-west1
+       gcloud run services add-iam-policy-binding gcp-cloudrun-back \
+         --platform=managed --region=europe-west1 \
+         --member="allUsers" --role="roles/run.invoker"
 
 images:
-  - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA'
-  - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest'
+ - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA'
+ - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest'
 
 ```
 > It is deploying only the backend part of our application.
@@ -104,8 +104,8 @@ Let's add the Frontend part now.
 
 To deploy on Firebase, your Cloud Build service account must have the role Firebase Admin. Grant the role to your service account with:
 ```shell script
-gcloud projects add-iam-policy-binding truaro-resources \
-    --member=serviceAccount:957758254747@cloudbuild.gserviceaccount.com \
+gcloud projects add-iam-policy-binding ${YOUR_PROJECT_ID} \
+    --member=serviceAccount:XXXX@cloudbuild.gserviceaccount.com \
     --role=roles/firebase.admin
 ```
 > * Replace `${YOUR_PROJECT_ID}` and `XXXX` by your actual value
@@ -115,27 +115,27 @@ Or, [if you follow this](https://cloud.google.com/cloud-build/docs/securing-buil
 
 ### Adding steps to deploy Vue in Firebase
 
-Just add those 3 steps between the step `deploy-cloud-run` and the `images` part:
+Just add the following 3 steps between the step `deploy-cloud-run` and the `images` part:
 ```yaml
-  - id: 'install-yarn'
-    waitFor: ['-']
-    name: node
-    entrypoint: yarn
-    dir: gcpfirebasefront
-    args: ['install', '--silent']
+ - id: 'install-yarn'
+   waitFor: ['-']
+   name: node
+   entrypoint: yarn
+   dir: gcpfirebasefront
+   args: ['install', '--silent']
 
-  - id: 'build-front'
-    waitFor: [ 'install-yarn' ]
-    name: node
-    entrypoint: yarn
-    dir: gcpfirebasefront
-    args: [ 'build' ]
+ - id: 'build-front'
+   waitFor: [ 'install-yarn' ]
+   name: node
+   entrypoint: yarn
+   dir: gcpfirebasefront
+   args: [ 'build' ]
 
-  - id: 'deploy-firebase'
-    waitFor: [ 'build-front' ]
-    name: gcr.io/${PROJECT_ID}/firebase
-    args: [ 'deploy', '--project=$PROJECT_ID', '--only', 'hosting' ]
-    dir: gcpfirebasefront
+ - id: 'deploy-firebase'
+   waitFor: [ 'build-front' ]
+   name: gcr.io/${PROJECT_ID}/firebase
+   args: [ 'deploy', '--project=$PROJECT_ID', '--only', 'hosting' ]
+   dir: gcpfirebasefront
 ```
 
 As always, let's review the important part.
@@ -144,13 +144,13 @@ As always, let's review the important part.
 
 ```yaml
 - id: 'install-yarn'
-  waitFor: ['-']
-  name: node
-  entrypoint: yarn
-  dir: gcpfirebasefront
-  args: ['install', '--silent']
+ waitFor: ['-']
+ name: node
+ entrypoint: yarn
+ dir: gcpfirebasefront
+ args: ['install', '--silent']
 ```
-> * `waitFor: [ '-' ]`: Run in parallel this step with the others. Indeed, we don't need to wait for the backend to be deployed in order to deploy the front. It is a performance improvements of your CD pipeline.
+> * `waitFor: [ '-' ]`: Run this step in parallel with the others. Indeed, we don't need to wait for the backend to be deployed in order to deploy the front. It is a performance improvement of your CD pipeline.
 > * `name: node`: We use the official `node` image from the Docker hub registry.
 > * `entrypoint: yarn`: `yarn` is the package manager we use to build the application.
 > * `dir: gcpfirebasefront`: We change the directory to go in the `gcpfirebasefront`.
@@ -159,11 +159,11 @@ As always, let's review the important part.
 #### Build the Vue application
 ```yaml
 - id: 'build-front'
-  waitFor: [ 'install-yarn' ]
-  name: node
-  entrypoint: yarn
-  dir: gcpfirebasefront
-  args: [ 'build' ]
+ waitFor: [ 'install-yarn' ]
+ name: node
+ entrypoint: yarn
+ dir: gcpfirebasefront
+ args: [ 'build' ]
 ```
 > * `waitFor: [ 'install-yarn' ]`: `yarn install` needs to be done before moving further
 > * `args: [ 'build' ]`: Just run the `yarn build` command, to package our application for production
@@ -173,17 +173,17 @@ As you can see, we do not create any Docker image. We simply build the applicati
 #### Deploy on Firebase
 ```yaml
 - id: 'deploy-firebase'
-  waitFor: [ 'build-front' ]
-  name: gcr.io/$PROJECT_ID/firebase
-  args: [ 'deploy', '--project=$PROJECT_ID', '--only', 'hosting' ]
-  dir: gcpfirebasefront
+ waitFor: [ 'build-front' ]
+ name: gcr.io/$PROJECT_ID/firebase
+ args: [ 'deploy', '--project=$PROJECT_ID', '--only', 'hosting' ]
+ dir: gcpfirebasefront
 ```
 > * `waitFor: [ 'build-front' ]`: Just wait for the previous step, not the backend steps.
 > * `name: gcr.io/$PROJECT_ID/firebase`: Step based on the image we created earlier to use the Firebase CLI
 > * `args: [ 'deploy', '--project=$PROJECT_ID', '--only', 'hosting' ]`: The args to be passed to `firebase` command
 > * `$PROJECT_ID`: As always, a substitution variable provided by Cloud Build
 
-This step simply executes the command `firebase deploy --project=${PROJECT_ID} --only hosting`. If you remember well, it was the same command we used in [the previous article](/build-deploy-vue-app-in-firebase-with-cloudrun-backend) from our local mahcine. 
+This step simply executes the command `firebase deploy --project=${PROJECT_ID} --only hosting`. If you remember well, it was the same command we used in [the previous article](/build-deploy-vue-app-in-firebase-with-cloudrun-backend) from our local machine.
 > Once again, do not go too fast, start slow with easy steps. You can only create a Continuous Deployment pipeline if you have something to automate...
 
 ### Review the Cloud Build deployment file
@@ -191,61 +191,60 @@ This step simply executes the command `firebase deploy --project=${PROJECT_ID} -
 The final file looks like:
 ```yaml
 steps:
-  - id: 'dockerize-project'
-    name: gcr.io/cloud-builders/docker
-    dir: gcpcloudrunback
-    args: [ 'build',
-            '-t', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA',
-            '-t', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest',
-            '.' ]
+ - id: 'dockerize-project'
+   name: gcr.io/cloud-builders/docker
+   dir: gcpcloudrunback
+   args: [ 'build',
+           '-t', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA',
+           '-t', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest',
+           '.' ]
 
-  - id: 'push-to-cloud-registry'
-    name: gcr.io/cloud-builders/docker
-    args: [ 'push', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA' ]
+ - id: 'push-to-cloud-registry'
+   name: gcr.io/cloud-builders/docker
+   args: [ 'push', 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA' ]
 
-  - id: 'deploy-cloud-run'
-    name: gcr.io/cloud-builders/gcloud
-    dir: gcpcloudrunback
-    entrypoint: bash
-    args:
-      - '-c'
-      - |
-        apt-get update
-        apt-get install -qq -y gettext
-        export PROJECT_ID=$PROJECT_ID
-        export IMAGE_VERSION=$SHORT_SHA
-        export SCALING_INSTANCE_COUNT=${_SCALING_INSTANCE_COUNT}
-        envsubst < gcp-cloudrun-back.yaml > gcp-cloudrun-back_with_env.yaml
-        gcloud beta run services replace gcp-cloudrun-back_with_env.yaml \
-          --platform=managed --region=europe-west1
-        gcloud run services add-iam-policy-binding gcp-cloudrun-back \
-          --platform=managed --region=europe-west1 \
-          --member="allUsers" --role="roles/run.invoker"
-  
-  - id: 'install-yarn'
-    waitFor: ['-']
-    name: node
-    entrypoint: yarn
-    dir: gcpfirebasefront
-    args: ['install', '--silent']
+ - id: 'deploy-cloud-run'
+   name: gcr.io/cloud-builders/gcloud
+   dir: gcpcloudrunback
+   entrypoint: bash
+   args:
+     - '-c'
+     - |
+       apt-get update
+       apt-get install -qq -y gettext
+       export PROJECT_ID=$PROJECT_ID
+       export IMAGE_VERSION=$SHORT_SHA
+       export SCALING_INSTANCE_COUNT=${_SCALING_INSTANCE_COUNT}
+       envsubst < gcp-cloudrun-back.yaml > gcp-cloudrun-back_with_env.yaml
+       gcloud beta run services replace gcp-cloudrun-back_with_env.yaml \
+         --platform=managed --region=europe-west1
+       gcloud run services add-iam-policy-binding gcp-cloudrun-back \
+         --platform=managed --region=europe-west1 \
+         --member="allUsers" --role="roles/run.invoker"
 
-  - id: 'build-front'
-    waitFor: [ 'install-yarn' ]
-    name: node
-    entrypoint: yarn
-    dir: gcpfirebasefront
-    args: [ 'build' ]
+ - id: 'install-yarn'
+   waitFor: ['-']
+   name: node
+   entrypoint: yarn
+   dir: gcpfirebasefront
+   args: ['install', '--silent']
 
-  - id: 'deploy-firebase'
-    waitFor: [ 'build-front' ]
-    name: gcr.io/$PROJECT_ID/firebase
-    args: [ 'deploy', '--project=$PROJECT_ID', '--only', 'hosting' ]
-    dir: gcpfirebasefront
+ - id: 'build-front'
+   waitFor: [ 'install-yarn' ]
+   name: node
+   entrypoint: yarn
+   dir: gcpfirebasefront
+   args: [ 'build' ]
+
+ - id: 'deploy-firebase'
+   waitFor: [ 'build-front' ]
+   name: gcr.io/$PROJECT_ID/firebase
+   args: [ 'deploy', '--project=$PROJECT_ID', '--only', 'hosting' ]
+   dir: gcpfirebasefront
 
 images:
-  - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA'
-  - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest'
-
+ - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:$SHORT_SHA'
+ - 'gcr.io/$PROJECT_ID/gcp-cloudrun-back:latest'
 ```
 
 ### Change the Vue application to see a change
@@ -253,8 +252,8 @@ images:
 Just change the `gcpfirebasefront/src/HelloWorld.vue` file. Update the `<h1>` to see the Frontend has been deployed:
 ```vue
 <template>
-  <div class="hello">
-    <h1>From firebase: {{ msg }}</h1>
+ <div class="hello">
+   <h1>From firebase: {{ msg }}</h1>
 ```
 
 As we already have the Cloud Build triggers created in [a previous article](/continuous-deployment-with-cloud-build), simply push your application and everything will be automatically deployed.
@@ -274,13 +273,14 @@ In this article, we covered:
 * Configuring the Cloud Build service account to deploy applications on Firebase
 * Configuring Cloud Build steps to build and deploy a static frontend application on Firebase
 
-With all the previous articles, we are starting to have nice view of the tools and services we can lever to easily deploy an application on the Cloud. You might have noticed that you haven't lots of fees for this application, even if it is accessible 24/7 anywhere on earth. This is one of the main advantages of GCP platform, you can build international applications for a very attractive price.
+With all the previous articles, we are starting to have a nice view of the tools and services we can lever to easily deploy an application on the Cloud. You might have noticed, the pricing is very appealing for an application that is available 24/7 everywhere in the world. This is one of the main advantages of GCP platform, you can build international applications for a very attractive price.
 
 ## What's next
 
 To go further, we could:
 * Configure a cache to improve build speed to avoid downloading frontend dependencies at each build
 * Use the multi-site Firebase feature to have a staging and production website
+* [Use the new preview channel feature](https://firebase.google.com/docs/hosting/manage-hosting-resources)
 * Split the `cloudbuild.yaml` file to deploy independently the frontend and the backend
 
 ## Resources
