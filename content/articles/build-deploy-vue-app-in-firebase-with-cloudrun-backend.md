@@ -99,9 +99,11 @@ export default {
   components: {
     HelloWorld
   },
-  data: () => ({
-    message: 'Loading...'
-  }),
+  data() {
+    return {
+      message: 'Loading...'
+    };
+  },
   async created() {
     const response = await fetch('/api/')
     this.message = await response.text()
@@ -132,9 +134,11 @@ Here is the creation and the modification of the `data` part:
 ```js
 export default {
   // ...
-  data: () => ({
-    message: 'Loading...'
-  }),
+  data() {
+    return {
+      message: 'Loading...'
+    };
+  },
   async created() {
     const response = await fetch('/api/')
     this.message = await response.text()
