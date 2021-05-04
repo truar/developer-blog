@@ -125,12 +125,7 @@ You can see on the right side 2 interesting panels:
 
 ## Cloud Profiler
 
-doc:
-* https://cloud.google.com/profiler/docs/profiling-java#gke
-* https://cloud.google.com/profiler/docs/profiling-java
-
-
-Couples of information (installation with agents)
+Cloud Profiler is a service provided by Google Cloud to help understands the performance bottlenecks of your application. By analysing your application with Cloud Profiler, you can quickly spot what is causing the slowness in your application, and take actions to fix it.
 
 ### Installing the Agent
 
@@ -215,19 +210,19 @@ IMHO, the Cloud Profiler with Spring Boot is not very practical to profile speci
 
 ## Cloud Trace
 
-The last service you need to know is [Cloud Trace](https://cloud.google.com/trace/docs/setup). Its purpose is **monitor the latency** of your requests when users request your application. Simply, Latency is the time delay the user waits before receiving the response from your application.
+The last service you need to know is [Cloud Trace](https://cloud.google.com/trace/docs/setup). Its purpose is to **monitor the latency** of your requests when users call your application. In a nutshell, latency is the time delay the user waits before receiving the response from your application.
 
 This service is automatically configured to monitor your Cloud Run services, which makes it very easy to use. Here is a screenshot of the latency of several requests I have made for the test.
 
 ![Cloud Trace example](/articles/developer-tool-cloud-run/cloud-trace-example.png)
 
 Reading this graph is quite straightforward:
-* The blue circle represents the latency of a request
-* You can see the request that had the longest latency took 15 seconds. This request started the Cloud Run service, which is why it took so long
-* You can see some requests taking around 10 seconds. These requests were hitting the `/consume` API
+* The blue dots represents the latency of a request
+* You can see the request with the longest latency took 15 seconds. This request started the Cloud Run service, which is why it took so long
+* You can see some requests taking around 10 seconds. These requests were hitting the `/consume` API (remember the API I created earlier ?)
 * For most of the requests, it took around 50ms to handle a GET on `/todos`, which is great. It means the user almost never waits to get a request that went through your Cloud Run and Datastore.
 
-Of course, by default, not all requests are logged. Doing so would increase too much the volume of data, and your usage bill at the same time. 
+Of course, by default, not all requests are logged. Doing so would increase too much the volume of data, and your usage bill at the same time.
 
 Cloud Trace offers other features that are not detailed here, like:
 * Building insightful graph to monitor accurately your application
@@ -241,11 +236,11 @@ Cloud Trace offers other features that are not detailed here, like:
 # Conclusion
 
 I hope you have a better view of some developer tools that could make your life with Cloud Run easier. To go further, there are also tools about latency and error reporting. Please, find below the list of the resources we went through together:
-* [Deploy your source code with Cloud Run](https://cloud.google.com/blog/products/serverless/build-and-deploy-an-app-to-cloud-run-with-a-single-command)
-* [About Profiler](https://cloud.google.com/profiler/docs/about-profiler)
-* [Debugger Quickstart](https://cloud.google.com/debugger/docs/quickstart?hl=en)
-* [About Cloud Trace](https://cloud.google.com/trace/docs/setup)
-* [Cloud Logging concepts](https://cloud.google.com/logging/docs/concepts)
 * [CNCF website](https://www.cncf.io)
 * [The 12 apps factor](https://12factor.net/)
 * [A great video explaining The 12 apps By Julien Landuré](https://www.youtube.com/watch?v=qlF378oDqW8&list=PLdVDu8iO6zrMurVwGrFR23uw5OtGh4vFx&index=5)
+* [Deploy your source code with Cloud Run](https://cloud.google.com/blog/products/serverless/build-and-deploy-an-app-to-cloud-run-with-a-single-command)
+* [Cloud Logging concepts](https://cloud.google.com/logging/docs/concepts)
+* [Debugger Quickstart](https://cloud.google.com/debugger/docs/quickstart?hl=en)
+* [About Profiler](https://cloud.google.com/profiler/docs/about-profiler)
+* [About Cloud Trace](https://cloud.google.com/trace/docs/setup)
