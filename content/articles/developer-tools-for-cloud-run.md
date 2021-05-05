@@ -15,29 +15,29 @@ author:
 
 Cloud Run is the next generation of serverless solution offered by Google Cloud. It allows you to execute an [OCI image](https://opencontainers.org/) (Docker image for instance) of your choice on Google Cloud servers.
 
-For those who are more familiar with App Engine Standard environment, the main difference is that Cloud Run gives you the choice of the runtime environment for your application. Usually, App Engine provides a set of runtimes (Java, Node, Python...) that will execute your application. It frees the developer from the burden of packaging the application. However, it restricts the possibilities to use the latest version of a runtime environment (like Java 16 for instance).
+For those familiar with App Engine Standard environment, the main difference is that Cloud Run gives you the choice of your app’s runtime environment. Usually, App Engine provides a set of runtimes (Java, Node, Python...) that your application can run on. It frees the developer from the burden of packaging the application and its runtime. However, it can’t run your app on the latest version of a runtime environment (like Java 16 for instance).
 
-Running OCI image gives you a lot of flexibility. But at what cost? You now need to provide such an image to package your application. A common way to do so, can be to create a Dockerfile that contains the instructions to containerize your application.
+Using OCI images give you a lot of flexibility. But at what cost? You now need to provide such an image containing your application. A common way to do so is to create a Dockerfile that contains the instructions to containerize your application.
 
-As a developer, we, sometimes, like having access to some metrics, data or resources computation used by our application. In this article, we will see how you can:
-* See the logs of your Cloud Run application
-* Debug on production your application with no impact on performance
-* Profile your applications to monitor CPU usages and other metrics
+As developers, we like having access to some metrics, data or resources computation used by our application. In this article, we will go through how you can:
+* Access your Cloud Run application logs
+* Debug your applications on production without impacting performance
+* Profile your applications to monitor CPU usage and other metrics
 
 ## Cloud Logging - Check your application logs
 
-Logs have always been an important aspect for an application whose lifetime is intended to be for couples of years. You need to keep in mind that one day, something will go wrong on your application. And when it does, you better be ready to investigate.
+Logs have always been an important aspect for an application whose lifetime is intended to be a couple of years. You need to keep in mind that one day, something will go wrong in your application. And when it does, you better be ready to investigate.
 
-The first reflex everybody has when the application is down, either partially or totally, is to check the logs trying to find the root cause of the issue. That makes total sense, since it is easier to fix something when we know what to look for.
+Logs are the go to place when an incident occurs on an application. And it makes sense. Being able to look for the root cause and gather information on what went wrong and how is invaluable.
 
-The [12 factor apps](https://12factor.net/) (a set of best practices when developing containerized application) states "[An application] should not attempt to write to or manage log files. Instead, each running process writes its event stream, unbuffered, to `stdout`". This means you should only focus on logging behaviours and data to the console. Leave log capture & aggregation to the Ops.
+The [12 factor apps](https://12factor.net/) (a set of best practices when developing containerized applications) states "[An application] should not attempt to write to or manage log files. Instead, each running process writes its event stream, unbuffered, to `stdout`". This means you should only focus on logging behaviours and data to the console. Leave log capture & aggregation to the Ops.
 
-If you respect this principle, you can easily use [Cloud Logging](https://cloud.google.com/logging/docs) to monitor your Cloud Run services logs, aggregate them and define alerts, or custom metrics about your application.
+If you follow this principle, you can easily use [Cloud Logging](https://cloud.google.com/logging/docs) to monitor your Cloud Run services logs, aggregate them and define alerts, or custom metrics about your application.
 
 ![Cloud Run specific revisions logs into Cloud Logging](/articles/developer-tool-cloud-run/logging-cloud-run.png)
-> In this screenshot, we see the output for the revisions `cloudrun-developer-00005-xuh` (a revision is an immutable running instance of your application). But we could filter for the Cloud Run service `cloudrun-developer` for instance, or all Cloud Run resources...
+> In this screenshot, we see the output for the `cloudrun-developer-00005-xuh` revision (a revision is an immutable running instance of your application). But we could filter for the Cloud Run service `cloudrun-developer` for instance, or all Cloud Run resources...
 
-You do not have to access the server anymore, making a `tail -1000f /my/log/file.log` or any command you were used to. You have a great Web Interface, collecting and showing the logs of all your services. Therefore, it is easy to apply filters to see the output of a specific Cloud Run service, or filter by `Correlation-ID` to track a transaction across all your services.
+You do not have to log onto the server anymore, typing a `tail -1000f /my/log/file.log` or any command you were used to. You have a great Web Interface, collecting and showing the logs of all your services. Moreover, it is easy to apply filters to see the output of a specific Cloud Run service, or filter by `Correlation-ID` to track a transaction across all your services.
 
 If you wish to access the global documentation about Cloud Logging and Cloud Run, [here is the link](https://cloud.google.com/run/docs/logging).
 
@@ -45,19 +45,20 @@ If you wish to access the global documentation about Cloud Logging and Cloud Run
 
 I know, I know... My code is perfect, and there is no such thing as a "Bug"... So why bother using a Debugger in the first place...
 
-As great and magnificent you and your code can be, I am sorry to break it to you, but you (of course, not me 😝) will face undesired behaviors in your application. When it happens, you will be happy to be easily able to debug your application.
+As great and magnificent you and your code can be, I am sorry to break it to you, but you (of course, not me 😝) will face undesired behaviors in your application. When it happens, you will be happy to be able to debug your application easily.
 
-What if I told you there is a way. You can debug your application while it is running in production, with no impact on your user experience ? Sounds too good to be true, keep reading.
-
-If you were familiar with App Engine, you might have already used the [Cloud Debugger](https://cloud.google.com/debugger) service of Google Cloud. Any AppEngine application can be linked to Cloud Debugger in order to debug your application while it is running. If you tried Cloud Run recently, maybe you realized this feature was not natively provided and you felt betrayed... But it is still possible to enable it.
+What if I told you that there is a way. You can debug your application while it is running in production, with no impact on your user experience ? Sounds too good to be true, keep reading.
 
 Cloud Debugger lets you inspect the state of your application by providing:
 * The possibility to take **snapshots** of your code. If you run a Java application, you will see the stacktrace and the variables/parameters value.
 * The possibility to create **logpoints** in your code. This logpoint will send a log in Cloud Logging when the user hits the logpoint. Following a specification, you can log existing variables or statements to help you monitor your application directly in production.
 
+If you are familiar with App Engine, you might have already used the [Cloud Debugger](https://cloud.google.com/debugger) service of Google Cloud. Any AppEngine application can be linked to Cloud Debugger in order to debug your application while it is running. If you tried Cloud Run recently, maybe you realized this feature was not natively provided and you felt betrayed... Hold on ! It is still possible to enable it yourself.
+
+
 ### Installing the Agent
 
-Deploying an application on app engine includes in the container, an agent capable of interacting with Cloud Debugger. To enable the same service for Cloud Run, it is as easy as it sounds: you need to install the same agent in the OCI image you provide to Cloud Run.
+An application deployed on App Engine includes an agent capable of interacting with Cloud Debugger. To benefit from the same functionality on Cloud Run, it is as easy as it sounds: you need to install the same agent in the OCI image you provide to Cloud Run.
 
 Following [this documentation](https://cloud.google.com/debugger/docs/setup/java), here is how you can install the agent:
 ```dockerfile
@@ -74,7 +75,7 @@ CMD java \
    -jar PATH_TO_JAR_FILE
 ```
 
-Then, when running your Cloud Run service, you need to provide environment variables to complete the Debugger agent setup.
+Then, when running your Cloud Run service, you need to provide environment variables to complete the Debugger agent setup:
 ```shell script
 JAVA_TOOL_OPTIONS=-agentpath:/opt/cdbg/cdbg_java_agent.so
 ```
@@ -83,7 +84,7 @@ JAVA_TOOL_OPTIONS=-agentpath:/opt/cdbg/cdbg_java_agent.so
 
 To be able to create **snapshots and logpoints**, Cloud Debugger needs to have access to your source code. Cloud Debugger then displays your source code in the UI, and you just have to navigate to your code to create a snapshot or a logpoint.
 
-A practice for such use cases would be to sync your github repository with Source repositories. [Follow this link to do so](https://cloud.google.com/source-repositories/docs/mirroring-a-github-repository?hl=en).
+A way to benefit from this functionality is to sync your github repository with Source repositories. [Follow this link to do so](https://cloud.google.com/source-repositories/docs/mirroring-a-github-repository?hl=en).
 
 ### Example of logpoints and snapshots
 
@@ -100,7 +101,7 @@ logpoint("{createTodoDTO.toString()}")
 ```
 ![Logpoints example in the Debugger service](/articles/developer-tool-cloud-run/debugger-logpoints-example.png)
 
-You need to follow some Google Cloud logpoints specification in order to know what expressions you can use (For now, I am not able to find the complete documentation...). Here is the result in Cloud Logging.
+You have to follow Google Cloud Logpoints specification for your logpoints to be included inside cloud logging (For now, I am not able to find the complete documentation...). Here is the result in Cloud Logging.
 
 ![Logpoints output in Cloud Logging service](/articles/developer-tool-cloud-run/logpoints-output-cloud-logging-service.png)
 
@@ -114,18 +115,23 @@ In this example, I created a snaphshot before calling the `todoRepository`. Here
 
 ![Snapshots example in Debugger service](/articles/developer-tool-cloud-run/debugger-snapshots-example.png)
 
-You can see on the right side 2 interesting panels:
+You can see 2 interesting panels on the right side:
 * Variables: Display the content of `this`, your method parameters and the variables you created.
 * Call Stack: Display the stacktrace the lead you to your current snapshot.
 
 > Please note a snapshot does not stop your execution, it simply collects data, but does not affect the user experience.
 
-> * Be also careful, the debugger is linked to a revision of your service. If you deploy a new revision, you will have to configure the Debugger to communicate with the new services.
+> * Be careful, the debugger is linked to a revision of your service. If you deploy a new revision, you will have to configure the Debugger to communicate with the new services.
 > * Besides, your application needs to be running before creating LogPoints and Snapshots, otherwise the debugger agents will not send data to the Debugger service.
 
 ## Cloud Profiler
 
-Cloud Profiler is a service provided by Google Cloud to help understands the performance bottlenecks of your application. By analysing your application with Cloud Profiler, you can quickly spot what is causing the slowness in your application, and take actions to fix it.
+doc:
+* https://cloud.google.com/profiler/docs/profiling-java#gke
+* https://cloud.google.com/profiler/docs/profiling-java
+
+
+Couples of information (installation with agents)
 
 ### Installing the Agent
 
@@ -162,7 +168,7 @@ Unfortunately, not all metrics are available for all languages. For the full lis
 
 ### Data representation in Cloud Profiler UI
 
-Before showing you a screenshot of the UI for my sample application, I think it is necessary to tell you how the data is represented. The final representation is a **Flame Graph**, which is an optimized and space efficient representation for a very large amount of information.
+Before showing you a screenshot of the UI for my sample application, I think it is necessary to explain how the data is represented. The final representation is a **Flame Graph**, which is an optimized and space efficient visualisation suitable for displaying a large amount of information.
 
 ![Flame graph concept](/articles/developer-tool-cloud-run/concept-flame-create.png)
 
@@ -206,36 +212,35 @@ In terms of seconds spent on the method, the Wall Time is 8.95s and the CPU Time
 
 With an application dealing with multiple users, you could have more useful metrics and time spent in specific methods, helping identify bottlenecks.
 
-IMHO, the Cloud Profiler with Spring Boot is not very practical to profile specific business code and not framework code. Indeed, I spared you from the global Profiler graph, but you mostly see framework related methods, which can make it harder to find bottlenecks in your business code. Obviously, your application needs to be used in order to overcome the cost of the framework.
+IMHO, the Cloud Profiler with Spring Boot is not very practical to profile specific business code without the noise coming from the framework code. Indeed, I spared you from the global Profiler graph, but you mostly see framework related methods, which can make it harder to find bottlenecks in your business code.
 
 ## Cloud Trace
 
 The last service you need to know is [Cloud Trace](https://cloud.google.com/trace/docs/setup). Its purpose is to **monitor the latency** of your requests when users call your application. In a nutshell, latency is the time delay the user waits before receiving the response from your application.
 
-This service is automatically configured to monitor your Cloud Run services, which makes it very easy to use. Here is a screenshot of the latency of several requests I have made for the test.
+This service is automatically configured to monitor your Cloud Run services, which makes it very easy to use. Here is a screenshot of the latency of several test requests I made.
 
 ![Cloud Trace example](/articles/developer-tool-cloud-run/cloud-trace-example.png)
 
-Reading this graph is quite straightforward:
+Parsing this graph is quite straightforward:
 * The blue dots represents the latency of a request
 * You can see the request with the longest latency took 15 seconds. This request started the Cloud Run service, which is why it took so long
 * You can see some requests taking around 10 seconds. These requests were hitting the `/consume` API (remember the API I created earlier ?)
-* For most of the requests, it took around 50ms to handle a GET on `/todos`, which is great. It means the user almost never waits to get a request that went through your Cloud Run and Datastore.
+* For most of the requests, it took around 50ms to handle a GET on `/todos`, which is great. It means the user almost never waits for requests going through your Cloud Run and Datastore.
 
-Of course, by default, not all requests are logged. Doing so would increase too much the volume of data, and your usage bill at the same time.
+Of course, by default, not all requests are logged. Doing so would increase data volume greatly, and your usage bill at the same time. Instead logs are sampled and only a subset of them are collected.
 
 Cloud Trace offers other features that are not detailed here, like:
-* Building insightful graph to monitor accurately your application
-* Monitoring requests made by your application to another application to calculate the global latency
+* Building insightful graph to accurately monitor your application
+* Monitoring outgoing requests made by your application to another application to calculate the global latency
 * Exporting the data to aggregate your trace the way you need
 * Providing data about the user who generated the request, like its country, its region, its city...
 
 > The tool I used to generate some traffic is [siege](https://linux.die.net/man/1/siege), a Linux tool to generate concurrent traffic on an endpoint. Here is the command line I used: `siege -c 3 https://...`
 
-
 # Conclusion
 
-I hope you have a better view of some developer tools that could make your life with Cloud Run easier. To go further, there are also tools about latency and error reporting. Please, find below the list of the resources we went through together:
+I hope you have a better view of some developer tools that could make your life with Cloud Run easier. To go further, there are other tools focused on latency and error reporting. Please, find the list of the resources we went through together below:
 * [CNCF website](https://www.cncf.io)
 * [The 12 apps factor](https://12factor.net/)
 * [A great video explaining The 12 apps By Julien Landuré](https://www.youtube.com/watch?v=qlF378oDqW8&list=PLdVDu8iO6zrMurVwGrFR23uw5OtGh4vFx&index=5)
