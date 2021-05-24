@@ -111,7 +111,7 @@ For Java, I noticed 2 interesting things:
 
 A snapshot works in a similar way, but the output is different. Instead of seeing logs output, you can directly inspect the stacktrace, and the current state of the object in the scope (`this`, parameters, variables...). [To have a step by step snapshot creation, follow this link](https://cloud.google.com/debugger/docs/using/snapshots).
 
-In this example, I created a snaphshot before calling the `todoRepository`. Here is the result:
+In this example, I created a snapshot before calling the `todoRepository`. Here is the result:
 
 ![Snapshots example in Debugger service](/articles/developer-tool-cloud-run/debugger-snapshots-example.png)
 
