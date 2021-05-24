@@ -1,10 +1,10 @@
 ---
 title: Developer tools for Cloud Run
-description: In this article, we cover different useful tools you could use if you want to fully enjoy Cloud Run, like Debugger, Cloud Logging, Profiler and Buildpacks.
+description: In this article, we cover different useful tools you could use if you want to fully enjoy Cloud Run, like Debugger, Cloud Logging and Profiler.
 image: /articles/developer-tool-cloud-run/main.png
 alt: Cloud Run logo
-readingTime: 5 minutes
-createdAt: 2021-04-22
+readingTime: 11 minutes
+createdAt: 2021-05-24
 author:
   name: Thibault Ruaro
   bio: Thibault is a Google Cloud Professional Architect & Developer, with a passion for great code. He likes reading about code best practices and staying up-to-date concerning the latest IT subject. He is also an official Spring Core Trainer, where he gives training at Zenika on a monthly basis.
